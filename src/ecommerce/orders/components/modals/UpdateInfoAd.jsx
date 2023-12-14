@@ -137,40 +137,40 @@ const UpdateInfoAd = ({
           </Typography>
         </DialogTitle>
         <DialogContent dividers>
-        <Stack direction="row" alignItems="center">
-                    <MyAutoComplete
-                    disabled={!!mensajeExitoAlert || isNuevaEtiqueta}
-                    label={"Selecciona una Etiqueta"}
-                    options={etiquetas} //Arreglo de objetos
-                    displayProp="Etiqueta" // Propiedad a mostrar
-                    idProp="IdEtiquetaOK" // Propiedad a guardar al dar clic
-                    onSelectValue={(selectedValue) => {
-                        //console.log("Selección:", selectedValue);
-                        formik.values.IdEtiqueta = selectedValue
-                        ? selectedValue?.IdEtiquetaOK
-                        : "";
-                        formik.values.IdEtiquetaOK = selectedValue
-                        ? selectedValue?.IdEtiquetaOK
-                        : "";
-                        setRefresh(!refresh);
-                    }}
-                    />
-                    <Tooltip title="Agrega manualmente una etiqueta nueva">
-                    <FormControlLabel
-                        sx={{ ml: 2 }}
-                        control={<Switch defaultChecked />}
-                        label={
-                        isNuevaEtiqueta
-                            ? "Agregar Nueva Etiqueta"
-                            : "Seleccionar una Etiqueta"
-                        }
-                        onChange={() => {
-                        setINuevaEtiqueta(!isNuevaEtiqueta);
-                        formik.values.IdEtiqueta = "";
-                        }}
-                    />
-                    </Tooltip>
-                </Stack>
+          <Stack direction="row" alignItems="center">
+            <MyAutoComplete
+              disabled={!!mensajeExitoAlert || isNuevaEtiqueta}
+              label={"Selecciona una Etiqueta"}
+              options={etiquetas} //Arreglo de objetos
+              displayProp="Etiqueta" // Propiedad a mostrar
+              idProp="IdEtiquetaOK" // Propiedad a guardar al dar clic
+              onSelectValue={(selectedValue) => {
+              //console.log("Selección:", selectedValue);
+                formik.values.IdEtiqueta = selectedValue
+                ? selectedValue?.IdEtiquetaOK
+                : "";
+                formik.values.IdEtiquetaOK = selectedValue
+                ? selectedValue?.IdEtiquetaOK
+                : "";
+                setRefresh(!refresh);
+              }}
+            />
+            <Tooltip title="Agrega manualmente una etiqueta nueva">
+              <FormControlLabel
+                sx={{ ml: 2 }}
+                control={<Switch defaultChecked />}
+                label={
+                  isNuevaEtiqueta
+                  ? "Agregar Nueva Etiqueta"
+                  : "Seleccionar una Etiqueta"
+                }
+                onChange={() => {
+                  setINuevaEtiqueta(!isNuevaEtiqueta);
+                  formik.values.IdEtiqueta = "";
+                }}
+              />
+            </Tooltip>
+          </Stack>
           <TextField
             id="IdEtiquetaOK"
             label="IdEtiquetaOK*"
@@ -184,31 +184,31 @@ const UpdateInfoAd = ({
             {...commonTextFieldProps}
             disabled={!!mensajeExitoAlert}
           />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>Selecciona una opción</InputLabel>
-                        <Select
-                            value={formik.values.IdTipoSeccionOK}
-                            label="Selecciona una opción"
-                            onChange={formik.handleChange}
-                            name="IdTipoSeccionOK" // Asegúrate de que coincida con el nombre del campo
-                            onBlur={formik.handleBlur}
-                            disabled={!!mensajeExitoAlert}
-                            >
-                            {etiquetaEspecifica?.valores.map((seccion) => {
-                            return (
-                                <MenuItem
-                                    value={`IdEstatusCatProdServ-${seccion.IdValorOK}`}
-                                    key={seccion.IdValorOK}
-                                >
-                                    {seccion.Valor}
-                                </MenuItem>
-                                );
-                            })}
-                        </Select>
-                        <FormHelperText>
-                        {formik.touched.IdTipoSeccionOK && formik.errors.IdTipoSeccionOK}
-                        </FormHelperText>
-                </FormControl>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Selecciona una opción</InputLabel>
+            <Select
+              value={formik.values.IdTipoSeccionOK}
+              label="Selecciona una opción"
+              onChange={formik.handleChange}
+              name="IdTipoSeccionOK" // Asegúrate de que coincida con el nombre del campo
+              onBlur={formik.handleBlur}
+              disabled={!!mensajeExitoAlert}
+            >
+              {etiquetaEspecifica?.valores.map((seccion) => {
+                return (
+                  <MenuItem
+                    value={`IdEstatusCatProdServ-${seccion.IdValorOK}`}
+                    key={seccion.IdValorOK}
+                  >
+                    {seccion.Valor}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+            <FormHelperText>
+              {formik.touched.IdTipoSeccionOK && formik.errors.IdTipoSeccionOK}
+            </FormHelperText>
+          </FormControl>
           <TextField
             id="Valor"
             label="Valor*"
