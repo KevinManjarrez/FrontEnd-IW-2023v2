@@ -19,9 +19,10 @@ import { useFormik } from "formik";
 
 
 const OrdenesDetalleFModal = ({
-  open,
-  onClose,
+  showModal,
+  setShowModal,
   row,
+  handleReload
   // Otros props que desees pasar al modal
 }) => {
   const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
@@ -47,6 +48,7 @@ const OrdenesDetalleFModal = ({
       try {
         // Lógica para guardar la información en la base de datos
         setMensajeExitoAlert("Envío actualizado correctamente");
+        handleReload();
       } catch (e) {
         setMensajeErrorAlert("No se pudo registrar");
       }
@@ -63,7 +65,7 @@ const OrdenesDetalleFModal = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog open={showModal} onClose={setShowModal(false)} fullWidth>
       <form onSubmit={(e) => formik.handleSubmit(e)}>
         <DialogTitle>
           <Typography>
@@ -125,7 +127,7 @@ const OrdenesDetalleFModal = ({
             loadingPosition="start"
             startIcon={<CloseIcon />}
             variant="outlined"
-            onClick={onClose}
+            onClick={setShowModal(false)}
           >
             <span>CERRAR</span>
           </LoadingButton>
