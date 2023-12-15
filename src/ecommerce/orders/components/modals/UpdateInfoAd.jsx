@@ -8,7 +8,21 @@ import {
   DialogActions,
   Box,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+  Stack,
+  Tooltip,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
+
+import { InfoAdModel } from "../../models/InfoAdModel";
+import useEtiquetas from "../../../orders/service/remote/useEtiquetas";
+import MyAutoComplete from "../../../../share/components/elements/atomos/MyAutoComplete";
+
 import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
@@ -29,6 +43,13 @@ const UpdateInfoAd = ({
   const [loading, setLoading] = useState(false);
   const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
   const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
+  //
+  const [isNuevaEtiqueta, setINuevaEtiqueta] = React.useState(false);
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    console.log("isNuevaEtiqueta", isNuevaEtiqueta);
+  }, [isNuevaEtiqueta]);
   
   const formik = useFormik({
     initialValues: {
@@ -42,9 +63,7 @@ const UpdateInfoAd = ({
       IdEtiquetaOK: Yup.string().required("Campo requerido"),
       IdEtiqueta: Yup.string().required("Campo requerido"),
       IdTipoSeccionOK: Yup.string().required("Campo requerido"),
-      Valor: Yup.number("")
-        .typeError("Ingresa un número")
-        .required("Campo requerido"),
+      Valor: Yup.string("").required("Campo requerido"),
       Secuencia: Yup.string().required("Campo requerido"),
     }),
     onSubmit: async (values) => {
@@ -85,11 +104,18 @@ const UpdateInfoAd = ({
       setLoading(false);
     },
   });
+  
+  const { etiquetas, etiquetaEspecifica } = useEtiquetas({
+    IdInstitutoOK: productSel.IdInstitutoOK,
+    IdEtiquetaOK: formik.values.IdEtiquetaOK || "",
+  });
+  //FIC: props structure for TextField Control.
   const commonTextFieldProps = {
     onChange: formik.handleChange,
     onBlur: formik.handleBlur,
     fullWidth: true,
     margin: "dense",
+    disabled: !!mensajeExitoAlert,
   };
 
 
@@ -111,6 +137,40 @@ const UpdateInfoAd = ({
           </Typography>
         </DialogTitle>
         <DialogContent dividers>
+          <Stack direction="row" alignItems="center">
+            <MyAutoComplete
+              disabled={!!mensajeExitoAlert || isNuevaEtiqueta}
+              label={"Selecciona una Etiqueta"}
+              options={etiquetas} //Arreglo de objetos
+              displayProp="Etiqueta" // Propiedad a mostrar
+              idProp="IdEtiquetaOK" // Propiedad a guardar al dar clic
+              onSelectValue={(selectedValue) => {
+              //console.log("Selección:", selectedValue);
+                formik.values.IdEtiqueta = selectedValue
+                ? selectedValue?.IdEtiquetaOK
+                : "";
+                formik.values.IdEtiquetaOK = selectedValue
+                ? selectedValue?.IdEtiquetaOK
+                : "";
+                setRefresh(!refresh);
+              }}
+            />
+            <Tooltip title="Agrega manualmente una etiqueta nueva">
+              <FormControlLabel
+                sx={{ ml: 2 }}
+                control={<Switch defaultChecked />}
+                label={
+                  isNuevaEtiqueta
+                  ? "Agregar Nueva Etiqueta"
+                  : "Seleccionar una Etiqueta"
+                }
+                onChange={() => {
+                  setINuevaEtiqueta(!isNuevaEtiqueta);
+                  formik.values.IdEtiqueta = "";
+                }}
+              />
+            </Tooltip>
+          </Stack>
           <TextField
             id="IdEtiquetaOK"
             label="IdEtiquetaOK*"
@@ -124,17 +184,31 @@ const UpdateInfoAd = ({
             {...commonTextFieldProps}
             disabled={!!mensajeExitoAlert}
           />
-          <TextField
-            id="IdEtiqueta"
-            label="IdEtiqueta*"
-            value={formik.values.IdEtiqueta}
-            error={
-              formik.touched.IdEtiqueta && Boolean(formik.errors.IdEtiqueta)
-            }
-            helperText={formik.touched.IdEtiqueta && formik.errors.IdEtiqueta}
-            {...commonTextFieldProps}
-            disabled={!!mensajeExitoAlert}
-          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Selecciona una opción</InputLabel>
+            <Select
+              value={formik.values.IdTipoSeccionOK}
+              label="Selecciona una opción"
+              onChange={formik.handleChange}
+              name="IdTipoSeccionOK" // Asegúrate de que coincida con el nombre del campo
+              onBlur={formik.handleBlur}
+              disabled={!!mensajeExitoAlert}
+            >
+              {etiquetaEspecifica?.valores.map((seccion) => {
+                return (
+                  <MenuItem
+                    value={`IdEstatusCatProdServ-${seccion.IdValorOK}`}
+                    key={seccion.IdValorOK}
+                  >
+                    {seccion.Valor}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+            <FormHelperText>
+              {formik.touched.IdTipoSeccionOK && formik.errors.IdTipoSeccionOK}
+            </FormHelperText>
+          </FormControl>
           <TextField
             id="Valor"
             label="Valor*"

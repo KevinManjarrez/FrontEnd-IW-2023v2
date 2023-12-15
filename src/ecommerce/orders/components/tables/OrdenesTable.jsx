@@ -133,7 +133,7 @@ const OrdenesTable = () => {
     );
     if (res) {
       try {
-        let orden = idRowSel;
+        let orden = editData;
         //const indexToDelete = idRowSel;
         //orden.splice(indexToDelete, 1);
         await DeleteOneOrder(orden.IdInstitutoOK,orden.IdNegocioOK,orden.IdOrdenOK);
