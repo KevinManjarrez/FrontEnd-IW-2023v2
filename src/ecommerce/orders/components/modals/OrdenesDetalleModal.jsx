@@ -11,15 +11,19 @@ import {
   Stack,
   Tooltip,
   FormControlLabel,
-  Switch
+  Switch,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText,
+  MenuItem
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import * as Yup from "yup";
-import { useFormik } from "formik";
-import { UpdatePatchOneOrderDetalle } from "../../service/remote/post/AddOrdenesDetalle";
-import { OrdenesDetalleModel } from "../../models/OrdenesDetalleModel";
+import { Formik, useFormik } from "formik";
+import { PatchOrdenesDetalle } from "../../service/remote/update/PatchOdenesDetalle";
 import { OrdenesDetalleValues } from "../../helpers/OrdenesDetallesValues";
 import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 import useProducts from "../../service/remote/useProducts";
@@ -39,49 +43,19 @@ const OrdenesDetalleModal = ({
     const [OrdenesValuesLabel, setOrdenesValuesLabel] = useState([]);
     const [isNuevaEtiqueta, setINuevaEtiqueta] = React.useState(false);
 
-    const { etiquetas, etiquetaEspecifica } = useProducts({IdProductoOK:""});
-
-    useEffect(() => {
-      console.log("Todas las Etiquetas", etiquetas);
-      console.log(" etiquetaEspecifica", etiquetaEspecifica);
-    }, [etiquetas, etiquetaEspecifica]);
     useEffect(() => {
       console.log("isNuevaEtiqueta", isNuevaEtiqueta);
     }, [isNuevaEtiqueta]);
-
-    async function getDataSelectOrdenesType() {
-      try {
-        const Labels = await GetAllLabels();
-        const OrdenesTypes = Labels.find(
-          (label) => label.IdEtiquetaOK === "IdTipoOrdenes"
-        );
-        const valores = OrdenesTypes.valores; // Obtenemos el array de valores
-        const IdValoresOK = valores.map((valor, index) => ({
-          IdValorOK: valor.IdValorOK,
-          key: index, // Asignar el índice como clave temporal
-        }));
-        setOrdenesValuesLabel(IdValoresOK);
-        console.log(OrdenesValuesLabel)
-      } catch (e) {
-        console.error(
-          "Error al obtener Etiquetas para Tipos Giros de Institutos:",
-          e
-        );
-      }
-    }
-    const handleSelectChange = (event) => {
-      setSelectedValue(event.target.value);
-    };
 
   const formik = useFormik({
     initialValues: {
       IdProdServOK: "",
       IdPresentaOK: "",
       DesPresentaPS: "",
-      Cantidad: "",
+      Cantidad: "1",
       PrecioUniSinIVA: "",
       PrecioUniConIVA: "",
-      PorcentajeIVA: "",
+      PorcentajeIVA: "16",
       MontoUniIVA: "",
       SubTotalSinIVA: "",
       SubTotalConIVA: "",
@@ -114,7 +88,7 @@ const OrdenesDetalleModal = ({
                 // console.log("LA ID QUE SE PASA COMO PARAMETRO ES:", row._id);
                 // Utiliza la función de actualización si estamos en modo de edición
                 
-                await UpdatePatchOneOrderDetalle(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK,DetalleOrdenes); //se puede sacar el objectid con row._id para lo del fic aaaaaaaaaaaaaaaaaaa
+                await PatchOrdenesDetalle(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK,DetalleOrdenes); //se puede sacar el objectid con row._id para lo del fic aaaaaaaaaaaaaaaaaaa
                 setMensajeExitoAlert("Envío actualizado Correctamente");
                 handleReload(); //usar la función para volver a cargar
       } catch (e) {
@@ -127,11 +101,14 @@ const OrdenesDetalleModal = ({
   const commonTextFieldProps = {
     onChange: formik.handleChange,
     onBlur: formik.handleBlur,
+
     fullWidth: true,
     margin: "dense",
     disabled: !!mensajeExitoAlert,
   };
 
+  const { etiquetas, etiquetaEspecifica } = useProducts({IdProdServOK: formik.values.IdProdServOK || ""});
+  
   return (
     <Dialog
       open={OrdenesDetalleShowModal}
@@ -150,15 +127,15 @@ const OrdenesDetalleModal = ({
                     disabled={!!mensajeExitoAlert || isNuevaEtiqueta}
                     label={"Selecciona un Producto"}
                     options={etiquetas} //Arreglo de objetos
-                    displayProp="Producto" // Propiedad a mostrar
-                    idProp="IdEtiquetaOK" // Propiedad a guardar al dar clic
+                    displayProp="IdProdServOK" // Propiedad a mostrar
+                    idProp="IdProdServOK" // Propiedad a guardar al dar clic
                     onSelectValue={(selectedValue) => {
                         console.log("Selección:", selectedValue);
-                        formik.values.IdEtiqueta = selectedValue
-                        ? selectedValue?.IdEtiquetaOK
+                        formik.values.DesPresentaPS = selectedValue
+                        ? selectedValue?.DesProdServ
                         : "";
-                        formik.values.IdEtiquetaOK = selectedValue
-                        ? selectedValue?.IdEtiquetaOK
+                        formik.values.IdProdServOK = selectedValue
+                        ? selectedValue?.IdProdServOK
                         : "";
                         setRefresh(!refresh);
                     }}
@@ -180,33 +157,6 @@ const OrdenesDetalleModal = ({
                     </Tooltip>
                 </Stack>
           <TextField
-            id="IdProdServOK"
-            label="IdProdServOK*"
-            value={formik.values.IdProdServOK}
-            {...commonTextFieldProps}
-            error={
-              formik.touched.IdProdServOK &&
-              Boolean(formik.errors.IdProdServOK)
-            }
-            helperText={
-              formik.touched.IdProdServOK && formik.errors.IdProdServOK
-            }
-            disabled={true}
-          />
-          <TextField
-            id="IdPresentaOK"
-            label="IdPresentaOK*"
-            value={formik.values.IdPresentaOK}
-            {...commonTextFieldProps}
-            error={
-              formik.touched.IdPresentaOK &&
-              Boolean(formik.errors.IdPresentaOK)
-            }
-            helperText={
-              formik.touched.IdPresentaOK && formik.errors.IdPresentaOK
-            }
-          />
-          <TextField
             id="DesPresentaPS"
             label="DesPresentaPS*"
             value={formik.values.DesPresentaPS}
@@ -220,11 +170,52 @@ const OrdenesDetalleModal = ({
             }
             disabled={true}
           />
+          <FormControl fullWidth margin="normal">
+                    <InputLabel>Selecciona una Precentacion</InputLabel>
+                    <Select
+                    value={formik.values.IdPresentaOK}
+                    label="Selecciona una Pecentacion"
+                    onChange={formik.handleChange}
+                    name="IdPresentaOK" // Asegúrate de que coincida con el nombre del campo
+                    onBlur={formik.handleBlur}
+                    disabled={!!mensajeExitoAlert}
+                    >
+                    {etiquetaEspecifica?.cat_prod_serv_presenta.map((seccion) => {
+                        return (
+                        <MenuItem
+                            value={`cat_prod_serv_presenta-${seccion.IdPresentaOK}`}
+                            key={seccion.IdPresentaOK}
+                        >
+                            {seccion.DesPresenta}
+                        </MenuItem>
+                        );
+                    })}
+                </Select>
+                    <FormHelperText>
+                    {formik.touched.IdPresentaOK && formik.errors.IdPresentaOK}
+                    </FormHelperText>
+                </FormControl>
           <TextField
             id="Cantidad"
             label="Cantidad*"
             value={formik.values.Cantidad}
-            {...commonTextFieldProps}
+            onChange={(e) => {
+              const cantidad = e.target.value;
+              const nuevoValor = formik.values.PrecioUniSinIVA ?? 1;
+              const nuevoPrecioUniConIVA = nuevoValor * 0.16 || "";
+              const PrecioUniConIVAt = parseFloat(nuevoPrecioUniConIVA) + parseFloat(nuevoValor) || 0;
+
+              const SubTotalSinIVAt=cantidad * parseFloat(nuevoValor);
+              const SubTotalConIVAt=cantidad * PrecioUniConIVAt;
+
+              formik.setValues({
+                ...formik.values,
+                Cantidad: cantidad,
+                SubTotalSinIVA: SubTotalSinIVAt,
+                SubTotalConIVA:SubTotalConIVAt
+              });
+            }}
+            onBlur={formik.handleBlur}
             error={
               formik.touched.Cantidad &&
               Boolean(formik.errors.Cantidad)
@@ -233,11 +224,30 @@ const OrdenesDetalleModal = ({
               formik.touched.Cantidad && formik.errors.Cantidad
             }
           />
+          <div style={{ margin: '10px 0' }}></div>
           <TextField
             id="PrecioUniSinIVA"
             label="PrecioUniSinIVA*"
             value={formik.values.PrecioUniSinIVA}
-            {...commonTextFieldProps}
+            onChange={(e) => {
+              const nuevoValor = e.target.value;
+              const nuevoPrecioUniConIVA = nuevoValor * 0.16 || "";
+              const PrecioUniConIVAt = parseFloat(nuevoPrecioUniConIVA) + parseFloat(nuevoValor) || 0;
+              const cantidad = formik.values.Cantidad ?? 1;
+
+              const SubTotalSinIVAt=cantidad * parseFloat(nuevoValor);
+              const SubTotalConIVAt=cantidad * PrecioUniConIVAt;
+
+              formik.setValues({
+                ...formik.values,
+                PrecioUniSinIVA: nuevoValor,
+                PrecioUniConIVA: PrecioUniConIVAt,
+                MontoUniIVA: PrecioUniConIVAt,
+                SubTotalSinIVA: SubTotalSinIVAt,
+                SubTotalConIVA:SubTotalConIVAt
+              });
+            }}
+            onBlur={formik.handleBlur}
             error={
               formik.touched.PrecioUniSinIVA &&
               Boolean(formik.errors.PrecioUniSinIVA)

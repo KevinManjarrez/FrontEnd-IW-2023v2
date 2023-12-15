@@ -9,6 +9,8 @@ import BarActionsTable from "../../../../share/components/elements/bars/BarActio
 //FIC: Modals
 import OrdenesDetalleModal from "../modals/OrdenesDetalleModal";
 import PatchOrdenesDetalleModal from "../modals/PatchOrdenesDetalleModal";
+import { PatchOrdenesDetalle } from "../../service/remote/update/PatchOdenesDetalle";
+import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 
 import OrdenesDetalleFTable from "./OrdenesDetalleFTable";
 //REDUX
@@ -16,6 +18,11 @@ import { useDispatch } from "react-redux";
 import { SET_SELECTED_ORDENES_DETALLE_DATA } from "../../redux/slices/OrdenesSlice";
 
 import { useSelector } from "react-redux";
+
+import {
+  showMensajeConfirm,
+  showMensajeError,
+} from "../../../../share/components/elements/messages/MySwalAlerts";
 
 //FIC: Columns Table Definition.
 const OrdenesDetalleColumn = [
@@ -81,7 +88,8 @@ const OrdenesDetalleColumn = [
     //FIC: controlar el estado que muesta u oculta la modal de nuevo InfoAd.
     const [OrdenesDetalleShowModal, setOrdenesDetalleShowModal] = useState(false);
     const [OrdenesDetallePatchShowModal, setOrdenesDetallePatchShowModal] = useState(false);
-    
+    const [editData, setEditData] = useState(false);     //Para saber si hay que rellenar los textfield con datos en caso de estar en modo de edición
+
     const [selectedRowIndex, setSelectedRowIndex] = useState(null); //Para saber cual es la fila y pasarla para el color de la tabla
 
     //Con redux sacar la data que se envió del otro archivo (ShippingsTable)
@@ -106,8 +114,9 @@ const OrdenesDetalleColumn = [
     const handleRowClick = (index) => {
       const clickedRow = OrdenesDetalleData[index];
       if (clickedRow) {
-        console.log("<<ID DEL DOCUMENTO SELECCIONADO>>:", clickedRow.IdProdServOK);
+        console.log("<<ID DEL DOCUMENTO SELECCIONADO>>:", clickedRow);
         setSelectedRowIndex(index);
+        setEditData(clickedRow);
         dispatch(SET_SELECTED_ORDENES_DETALLE_DATA(clickedRow));
       }
     };
@@ -124,6 +133,35 @@ const OrdenesDetalleColumn = [
     const OneOrdenesData = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
     setOrdenesDetalleData(OneOrdenesData.ordenes_detalle);
     setSelectedRowIndex(null);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedOrdenesData || selectedRowIndex === null) {
+      console.error("ordenSel es undefined o selectedRowIndex es null");
+      return;
+    }
+
+    const res = await showMensajeConfirm(
+      `La Info Adicional #${Number(selectedRowIndex) + 1} será eliminada, ¿Desea continuar?`
+    );
+
+    if (res) {
+      try {
+        const infoAd = [...selectedOrdenesData.ordenes_detalle];
+        infoAd.splice(selectedRowIndex, 1);
+        const dataToUpdate = {
+          ordenes_detalle: infoAd,
+        };
+
+        console.log("se",selectedOrdenesData.IdInstitutoOK)
+        await PatchOrdenesDetalle?.(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK, dataToUpdate);
+        showMensajeConfirm("Info Ad Eliminado");
+        //handleReload();
+      } catch (e) {
+        console.error("handleDelete", e);
+        showMensajeError(`No se pudo Eliminar el Info Ad`);
+      }
+    }
   };
 
     return (
@@ -151,6 +189,7 @@ const OrdenesDetalleColumn = [
                 <BarActionsTable
                 handleBtnAdd={() => setOrdenesDetalleShowModal(true)}
                 handleBtnUpdate={() => setOrdenesDetallePatchShowModal(true)}
+                handleBtnDelete={() => handleDelete()}
                 handleBtnDetails={() => console.log("clic handleBtnDetails")}
                 handleBtnReload={() => handleReload()}
                 isItemSelected={!!selectedRowIndex}
@@ -186,7 +225,9 @@ const OrdenesDetalleColumn = [
               OrdenesDetallePatchShowModal={OrdenesDetallePatchShowModal}
               setOrdenesDetallePatchShowModal={setOrdenesDetallePatchShowModal}
               handleReload={handleReload}
-              productSel={selectedOrdenesData} //Pasar como prop los datos que sacamos de redux desde ordentable para 
+              selectedRowIndex={selectedRowIndex}
+              productSel={editData}
+              row={selectedOrdenesData} //Pasar como prop los datos que sacamos de redux desde ordentable para 
               onClose={() => setOrdenesDetalleShowModal(false)}   //usarlos en InfoAdModal y consecuentemente en formik.
             />
           </Dialog>
