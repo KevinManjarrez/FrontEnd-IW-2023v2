@@ -23,8 +23,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import * as Yup from "yup";
 import { Formik, useFormik } from "formik";
-import { UpdatePatchOneOrderDetalle } from "../../service/remote/post/AddOrdenesDetalle";
-import { OrdenesDetalleModel } from "../../models/OrdenesDetalleModel";
+import { PatchOrdenesDetalle } from "../../service/remote/update/PatchOdenesDetalle";
 import { OrdenesDetalleValues } from "../../helpers/OrdenesDetallesValues";
 import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 import useProducts from "../../service/remote/useProducts";
@@ -53,10 +52,10 @@ const OrdenesDetalleModal = ({
       IdProdServOK: "",
       IdPresentaOK: "",
       DesPresentaPS: "",
-      Cantidad: "",
+      Cantidad: "1",
       PrecioUniSinIVA: "",
       PrecioUniConIVA: "",
-      PorcentajeIVA: "%16",
+      PorcentajeIVA: "16",
       MontoUniIVA: "",
       SubTotalSinIVA: "",
       SubTotalConIVA: "",
@@ -89,7 +88,7 @@ const OrdenesDetalleModal = ({
                 // console.log("LA ID QUE SE PASA COMO PARAMETRO ES:", row._id);
                 // Utiliza la función de actualización si estamos en modo de edición
                 
-                await UpdatePatchOneOrderDetalle(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK,DetalleOrdenes); //se puede sacar el objectid con row._id para lo del fic aaaaaaaaaaaaaaaaaaa
+                await PatchOrdenesDetalle(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK,DetalleOrdenes); //se puede sacar el objectid con row._id para lo del fic aaaaaaaaaaaaaaaaaaa
                 setMensajeExitoAlert("Envío actualizado Correctamente");
                 handleReload(); //usar la función para volver a cargar
       } catch (e) {
@@ -202,7 +201,7 @@ const OrdenesDetalleModal = ({
             value={formik.values.Cantidad}
             onChange={(e) => {
               const cantidad = e.target.value;
-              const nuevoValor = parseFloat(formik.values.PrecioUniSinIVA);
+              const nuevoValor = formik.values.PrecioUniSinIVA ?? 1;
               const nuevoPrecioUniConIVA = nuevoValor * 0.16 || "";
               const PrecioUniConIVAt = parseFloat(nuevoPrecioUniConIVA) + parseFloat(nuevoValor) || 0;
 
@@ -211,6 +210,7 @@ const OrdenesDetalleModal = ({
 
               formik.setValues({
                 ...formik.values,
+                Cantidad: cantidad,
                 SubTotalSinIVA: SubTotalSinIVAt,
                 SubTotalConIVA:SubTotalConIVAt
               });
@@ -224,6 +224,7 @@ const OrdenesDetalleModal = ({
               formik.touched.Cantidad && formik.errors.Cantidad
             }
           />
+          <div style={{ margin: '10px 0' }}></div>
           <TextField
             id="PrecioUniSinIVA"
             label="PrecioUniSinIVA*"

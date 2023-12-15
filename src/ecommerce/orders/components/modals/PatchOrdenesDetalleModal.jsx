@@ -38,19 +38,21 @@ import useProducts from "../../service/remote/useProducts";
 //SERVICES
 import { AddOneInfoAd } from "../../service/remote/post/AddOneInfoAd";
 import { GetAllLabels } from "../../../labels/services/remote/get/GetAllLabels";
+import { PatchOrdenesDetalle } from "../../service/remote/update/PatchOdenesDetalle";
 
 
 const PatchOrdenesDetalleModal = ({ 
     OrdenesDetallePatchShowModal,
     setOrdenesDetallePatchShowModal,
     productSel, 
-    handleReload
+    row,
+    handleReload,
+    selectedRowIndex
 }) => {
     const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
     const [refresh, setRefresh] = useState(false);
-    const [OrdenesValuesLabel, setOrdenesValuesLabel] = useState([]);
     const [isNuevaEtiqueta, setINuevaEtiqueta] = React.useState(false);
 
       useEffect(() => {
@@ -84,35 +86,43 @@ const PatchOrdenesDetalleModal = ({
             SubTotalConIVA: Yup.string().required("Campo requerido"),
         }),
         onSubmit: async (values) => {
-          setMensajeExitoAlert("");
-          setMensajeErrorAlert("");
-          setLoading(true);
+          setMensajeExitoAlert(null);
+          setMensajeErrorAlert(null);
 
             try {
-                console.log("algo",productSel)
-                let model = InfoAdModel();
-                const infoAd = {
-                ...model,
-                ...values,
-                };
-                infoAd.Secuencia = Number(infoAd.Secuencia);
+                //Modificar el producto con el Formulario
+                let product = JSON.parse(JSON.stringify(row));
+                console.log("antes:",product)
                 
-                let product = JSON.parse(JSON.stringify(productSel));
-                console.log("product", product);
-                product.cat_prod_serv_info_ad.push(infoAd);
+                if (selectedRowIndex >= 0) {
+                  // Crea una copia del objeto en idRowSel y modifica la propiedad IdEtiquetaOK
+                  product.ordenes_detalle[selectedRowIndex]= {
+                    //...product.ordenes_info_ad[idRowSel],
+                      IdProdServOK: values.IdProdServOK,
+                      IdPresentaOK: values.IdPresentaOK,
+                      DesPresentaPS: values.DesPresentaPS,
+                      Cantidad: Number(values.Cantidad),
+                      PrecioUniSinIVA: Number(values.PrecioUniSinIVA),
+                      PrecioUniConIVA: Number(values.PrecioUniConIVA),
+                      PorcentajeIVA: Number(values.PorcentajeIVA),
+                      MontoUniIVA: Number(values.MontoUniIVA),
+                      SubTotalSinIVA: Number(values.SubTotalSinIVA),
+                      SubTotalConIVA: Number(values.SubTotalConIVA)
+                  };
+                  
+                }
+                
+                console.log("temp:",product)
                 const dataToUpdate = {
-                cat_prod_serv_info_ad: product.cat_prod_serv_info_ad,
+                  ordenes_detalle: product.ordenes_detalle,
                 };
-                console.log(
-                " product.cat_prod_serv_info_ad",
-                product.cat_prod_serv_info_ad
-                );
-                //await updateProduct(product.IdProdServOK, dataToUpdate);
-
-                setMensajeExitoAlert("Info Adicional creada y guardada Correctamente");
-                handleReload();
+                console.log("data",dataToUpdate);
+                await PatchOrdenesDetalle(product.IdInstitutoOK,product.IdNegocioOK,product.IdOrdenOK, dataToUpdate);
+                
+                setMensajeExitoAlert("InfoAd modificada Correctamente");
+                //handleReload();
+                console.log("Se modifico")
             } catch (e) {
-                setMensajeExitoAlert(null);
                 setMensajeErrorAlert("No se pudo crear la Info Adicional");
             }
             setLoading(false);
@@ -218,6 +228,7 @@ const PatchOrdenesDetalleModal = ({
                     {formik.touched.IdPresentaOK && formik.errors.IdPresentaOK}
                     </FormHelperText>
                 </FormControl>
+                
             <TextField
             id="Cantidad"
             label="Cantidad*"
@@ -233,6 +244,7 @@ const PatchOrdenesDetalleModal = ({
 
               formik.setValues({
                 ...formik.values,
+                Cantidad: cantidad,
                 SubTotalSinIVA: SubTotalSinIVAt,
                 SubTotalConIVA:SubTotalConIVAt
               });
@@ -246,6 +258,8 @@ const PatchOrdenesDetalleModal = ({
               formik.touched.Cantidad && formik.errors.Cantidad
             }
           />
+                    <div style={{ margin: '10px 0' }}></div>
+
           <TextField
             id="PrecioUniSinIVA"
             label="PrecioUniSinIVA*"
