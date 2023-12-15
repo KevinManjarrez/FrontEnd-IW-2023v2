@@ -189,7 +189,7 @@ const AddOrdenesModal = ({
     initialValues: {
       IdInstitutoOK: "",
       IdNegocioOK: "",
-      IdOrdenOK: `9001-${IdGen}`,
+      IdOrdenOK: "",
       IdOrdenBK: "",
       IdTipoOrdenOK: "",
       IdRolOK: "",
@@ -257,6 +257,20 @@ const AddOrdenesModal = ({
   };
 
   const { etiquetas, etiquetaEspecifica } = useInstitutos({IdInstitutoOK: formik.values.IdInstitutoOK || "",});
+
+  useEffect(() => {
+      if (formik.values.IdInstitutoOK && formik.values.IdNegocioOK  > 0) {
+          updateIdOrdenOK(); // Actualizar IdEntregaOK al cambiar IdInstitutoOK o IdNegocioOK
+      }
+  }, [formik.values.IdInstitutoOK, formik.values.IdNegocioOK]);
+
+  const updateIdOrdenOK = () => {       
+    formik.setFieldValue( 
+        "IdOrdenOK",
+        `${formik.values.IdInstitutoOK}-${formik.values.IdNegocioOK}-${IdGen}`
+    );
+};
+
 
   return (
     <Dialog
