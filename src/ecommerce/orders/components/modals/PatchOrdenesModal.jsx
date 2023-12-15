@@ -12,31 +12,32 @@ import {
   Box,
   Alert,
   FormControlLabel,
-  Checkbox,
   InputLabel,
   Select,
   MenuItem,
   FormHelperText,
+  Stack,
+  Tooltip,
+  Switch,
+  FormControl
 } from "@mui/material";
 
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 //FIC: Formik - Yup
+import MyAutoComplete from "../../../../share/components/elements/atomos/MyAutoComplete";
+import useInstitutos from "../../../orders/service/remote/useInstitutos";
+
 //FIC: Helpers
 import { OrdenesValues } from "../../helpers/OrdenesValues";
 
 //FIC: Services
-import { UpdatePatchOneOrder } from "../../service/remote/update/UpdatePatchOneOrder";
-import { getAllOrdenes } from "../../service/remote/get/GetAllOrdenes";
-
-
-//FIC: Services
 import { GetAllLabels } from "../../../labels/services/remote/get/GetAllLabels";
-import { GetTipoOrden } from "../../../labels/services/remote/get/GetAllTipoOrden";
-import { GetRol } from "../../../labels/services/remote/get/GetRol";
 import { GetPersona } from "../../../labels/services/remote/get/GetPersona";
+import { UpdatePatchOneOrder } from "../../service/remote/update/UpdatePatchOneOrder";
 
+//FIC: Formik - Yup
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -54,15 +55,17 @@ const PatchOrdenesModal = ({
   const [OrdenesValuesLabel, setOrdenesValuesLabel] = useState([]);
   const [RolValuesLabel, setRolValuesLabel] = useState([]);
   const [PersonaValuesLabel, setPersonaValuesLabel] = useState([]);
-  console.log(row)
+  const [isNuevoInstituto, setINuevoInstituto] = React.useState(false);
+
+  useEffect(() => {
+    console.log("isNuevoInstituto", isNuevoInstituto);
+  }, [isNuevoInstituto]);
 
   const [IdGen, setIdGen] = useState(
     genID().replace(/-/g, "").substring(0, 12)
   );
-  //FIC: en cuanto se abre la modal llama el metodo
-  //que ejecuta la API que trae todas las etiquetas de la BD.
+
   useEffect(() => {
-    //getDataSelectOrdenesType();
     getDataSelectOrdenesType2();
     getDataSelectOrdenesType3();
     getDataSelectOrdenesType4();
@@ -134,19 +137,16 @@ const PatchOrdenesModal = ({
   }
 
   useEffect(() => {
-    //getDataSelectOrdenesType();
     getDataSelectOrdenesType2();
     getDataSelectOrdenesType3();
     getDataSelectOrdenesType4();
   }, []);
 
-  //useEffect para si estamos actualizando el campo no se pueda editar, se usa dentro del mismo textfield
-
   //FIC: Definition Formik y Yup.
   const formik = useFormik({
     initialValues: {
-      IdInstitutoOK: "9001",
-      IdNegocioOK: "1101",
+      IdInstitutoOK: row.IdInstitutoOK,
+      IdNegocioOK: row.IdNegocioOK,
       IdOrdenOK: row.IdOrdenOK,
       IdOrdenBK: row.IdOrdenBK,
       IdTipoOrdenOK: row.IdTipoOrdenOK,
@@ -182,8 +182,7 @@ const PatchOrdenesModal = ({
       try {
         const Ordenes = OrdenesValues(values);
         console.log("<<Ordenes>>", Ordenes);
-        // console.log("LA ID QUE SE PASA COMO PARAMETRO ES:", row._id);
-        // Utiliza la función de actualización si estamos en modo de edición
+
         await UpdatePatchOneOrder(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK,Ordenes); //se puede sacar el objectid con row._id para lo del fic aaaaaaaaaaaaaaaaaaa
         setMensajeExitoAlert("Envío actualizado Correctamente");
         handleReload(); //usar la función para volver a cargar los datos de la tabla y que se vea la actualizada
@@ -191,8 +190,6 @@ const PatchOrdenesModal = ({
         setMensajeExitoAlert(null);
         setMensajeErrorAlert("No se pudo Modificar");
       }
-
-      //FIC: ocultamos el Loading.
       setLoading(false);
     },
   });
@@ -204,6 +201,8 @@ const PatchOrdenesModal = ({
     margin: "dense",
     disabled: !!mensajeExitoAlert,
   };
+
+  const { etiquetas, etiquetaEspecifica } = useInstitutos({IdInstitutoOK: formik.values.IdInstitutoOK || "",});
 
   return (
     <Dialog
@@ -220,35 +219,68 @@ const PatchOrdenesModal = ({
             </strong>
           </Typography>
         </DialogTitle>
-        {/* FIC: Aqui va un tipo de control por cada Propiedad de Institutos */}
-        {/* FIC: Aqui va un tipo de control por cada Propiedad de Institutos */}
-        {/* FIC: Aqui va un tipo de control por cada Propiedad de Institutos */}
         <DialogContent
           sx={{ display: "flex", flexDirection: "column" }}
           dividers
         >
           {/* FIC: Campos de captura o selección */}
-          <TextField
+          <Stack direction="row" alignItems="center">
+        <MyAutoComplete
+          disabled={!!mensajeExitoAlert || isNuevoInstituto}
+          label="Selecciona un Instituto"
+          options={etiquetas}
+          displayProp="IdInstitutoOK"
+          idProp="IdInstitutoOK"
+          onSelectValue={(selectedValue) => {
+            formik.values.IdInstitutoOK = selectedValue ? selectedValue?.IdInstitutoOK : "";
+            setRefresh(!refresh);
+          }}
+        />
+        <Tooltip title="Agrega manualmente una etiqueta nueva">
+          <FormControlLabel
+            sx={{ ml: 2 }}
+            control={<Switch defaultChecked />}
+            label={isNuevoInstituto ? "Agregar Nuevo Instituto" : "Seleccionar un Instituto"}
+            onChange={() => {
+              setINuevoInstituto(!isNuevoInstituto);
+              formik.values.IdInstitutoOK = "";
+            }}
+          />
+        </Tooltip>
+        </Stack> 
+        <TextField
             id="IdInstitutoOK"
             label="IdInstitutoOK*"
             value={formik.values.IdInstitutoOK}
-            /* onChange={formik.handleChange} */
             {...commonTextFieldProps}
-            error={formik.touched.IdInstitutoOK && Boolean(formik.errors.IdInstitutoOK)}
-            helperText={formik.touched.IdInstitutoOK && formik.errors.IdInstitutoOK}
-            disabled={true}
-          />
-          <TextField
-            id="IdNegocioOK"
-            label="IdNegocioOK*"
+            error={ formik.touched.IdInstitutoOK && Boolean(formik.errors.IdInstitutoOK) }
+            helperText={ formik.touched.IdInstitutoOK && formik.errors.IdInstitutoOK }
+        />
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Selecciona un Negocio</InputLabel>
+          <Select
             value={formik.values.IdNegocioOK}
-            
-            /* onChange={formik.handleChange} */
-            {...commonTextFieldProps}
-            error={formik.touched.IdNegocioOK && Boolean(formik.errors.IdNegocioOK)}
-            helperText={formik.touched.IdNegocioOK && formik.errors.IdNegocioOK}
-            disabled={true}
-          />
+            label="Selecciona una opción"
+            onChange={formik.handleChange}
+            name="IdNegocioOK" // Asegúrate de que coincida con el nombre del campo
+            onBlur={formik.handleBlur}
+            disabled={!!mensajeExitoAlert}
+            >
+            {etiquetaEspecifica?.cat_negocios.map((seccion) => {
+                return (
+                <MenuItem
+                    value={seccion.IdNegocioOK}
+                    key={seccion.IdNegocioOK}
+                >
+                    {seccion.Alias}
+                </MenuItem>
+                );
+            })}
+          </Select>
+            <FormHelperText>
+            {formik.touched.IdNegocioOK && formik.errors.IdNegocioOK}
+            </FormHelperText>
+          </FormControl>
           <TextField
             id="IdOrdenOK"
             label="IdOrdenOK*"
@@ -267,21 +299,24 @@ const PatchOrdenesModal = ({
             error={formik.touched.IdOrdenBK && Boolean(formik.errors.IdOrdenBK)}
             helperText={formik.touched.IdOrdenBK && formik.errors.IdOrdenBK}
           />
+          <FormControl fullWidth margin="normal">
           <InputLabel htmlFor="dynamic-select-tipo-orden">Tipo de Orden</InputLabel>
           <Select
             id="dynamic-select-tipo-orden"
-            value={formik.values.IdTipoOrdenOK} // Asegúrate de que este valor coincide con las opciones disponibles
+            value={formik.values.IdTipoOrdenOK}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             name="IdTipoOrdenOK"
             aria-label="TipoOrden"
           >
             {OrdenesValuesLabel.map((option, index) => (
-              <MenuItem key={option.IdValorOK} value={option.key}>
+              <MenuItem key={option.IdValorOK} value={`IdTipoOrdenes-${option.key}`}>
                 {option.IdValorOK}
               </MenuItem>
             ))}
           </Select>
+          </FormControl >
+          <FormControl fullWidth margin="normal">
           <InputLabel htmlFor="dynamic-select-rol">Rol</InputLabel>
           <Select
             id="dynamic-select-rol"
@@ -292,14 +327,17 @@ const PatchOrdenesModal = ({
             aria-label="Rol"
           >
             {RolValuesLabel.map((option, index) => (
-              <MenuItem key={option.IdValorOK} value={option.key}>
+              <MenuItem key={option.IdValorOK} value={`IdTipoRol-${option.key}`}>
                 {option.IdValorOK}
               </MenuItem>
             ))}
           </Select>
+          </FormControl>
+          <div style={{ margin: '10px 0' }}></div>
           <Autocomplete
             id="dynamic-autocomplete-persona"
             options={PersonaValuesLabel}
+            
             getOptionLabel={(option) => option.IdValorOK}
             value={PersonaValuesLabel.find((option) => option.key === formik.values.IdPersonaOK) || null}
             onChange={(e, newValue) => {
@@ -308,13 +346,12 @@ const PatchOrdenesModal = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="TipoOrden"
+                label={"Selecciona una Persona"}
                 error={formik.touched.IdPersonaOK && Boolean(formik.errors.IdPersonaOK)}
                 helperText={formik.touched.IdPersonaOK && formik.errors.IdPersonaOK}
               />
             )}
-          />
-          
+          />          
         </DialogContent>
         {/* FIC: Aqui van las acciones del usuario como son las alertas o botones */}
         <DialogActions sx={{ display: "flex", flexDirection: "row" }}>
@@ -340,8 +377,6 @@ const PatchOrdenesModal = ({
           >
             <span>CERRAR</span>
           </LoadingButton>
-          {/* FIC: Boton de Guardar. */}
-          {/* FIC: Boton de Guardar. */}
           {/* FIC: Boton de Guardar. */}
           <LoadingButton
             color="primary"

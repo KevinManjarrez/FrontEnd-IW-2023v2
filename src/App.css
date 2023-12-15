@@ -5,19 +5,25 @@
   text-align: center;
 }
 
+/* Estilos para la clase de la logo */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
+/* Añade un efecto de sombra al hacer hover en la logo */
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
+/* Añade un efecto de sombra específico para la clase 'react' de la logo */
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Definición de la animación para girar la logo */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -27,16 +33,19 @@
   }
 }
 
+/* Aplica la animación solo si la preferencia de movimiento no está reducida */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Estilos para la clase de la tarjeta */
 .card {
   padding: 2em;
 }
 
+/* Estilos para el texto 'read-the-docs' */
 .read-the-docs {
   color: #888;
 }
