@@ -3,7 +3,8 @@ const initialState = {
     //DATA
 ordenesDataArr: [],
 selectedOrdenesData: null,
-selectedOrdenesDetalleData: null
+selectedOrdenesDetalleData: null,
+index:null
 
   //SELECCIONES
   //instituteDataObj: {},
@@ -24,13 +25,17 @@ SET_SELECTED_ORDENES_DATA: (state, action) => {
 SET_SELECTED_ORDENES_DETALLE_DATA: (state, action) => {
     state.selectedOrdenesDetalleData = action.payload;
 },
+SET_INDEX:(state,action) => {
+    state.index = action.payload;
+}
     }
 }
 );
 export const {
 SET_DATA_ORDENES,
 SET_SELECTED_ORDENES_DATA,
-SET_SELECTED_ORDENES_DETALLE_DATA
+SET_SELECTED_ORDENES_DETALLE_DATA,
+SET_INDEX
     //ADD_PRODUCT_SELECTED,
     //SWITCH_STATE,
 } = OrdenesSlice.actions;

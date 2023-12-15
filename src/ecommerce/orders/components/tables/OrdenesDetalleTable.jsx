@@ -15,7 +15,7 @@ import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 import OrdenesDetalleFTable from "./OrdenesDetalleFTable";
 //REDUX
 import { useDispatch } from "react-redux";
-import { SET_SELECTED_ORDENES_DETALLE_DATA } from "../../redux/slices/OrdenesSlice";
+import { SET_INDEX, SET_SELECTED_ORDENES_DETALLE_DATA } from "../../redux/slices/OrdenesSlice";
 
 import { useSelector } from "react-redux";
 
@@ -118,6 +118,8 @@ const OrdenesDetalleColumn = [
         setSelectedRowIndex(index);
         setEditData(clickedRow);
         dispatch(SET_SELECTED_ORDENES_DETALLE_DATA(clickedRow));
+        dispatch(SET_INDEX(index));
+        
       }
     };
 

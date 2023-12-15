@@ -21,12 +21,15 @@ const OrdenesDetalleUTable = ({
 
   const [showModal, setShowModal] = useState(false);
     //Con redux sacar la data que se envió del otro archivo (ShippingsTable)
-  const selectedOrdenesData = useSelector((state) => state.ordenesReducer.selectedOrdenesDetalleData);
-
+  const selectedOrdenesDetalleData = useSelector((state) => state.ordenesReducer.selectedOrdenesDetalleData);
+  const selectedOrdenesData = useSelector((state) => state.ordenesReducer.selectedOrdenesData);
+  const index=useSelector((state) => state.ordenesReducer.index)
+  
+  console.log("Orden detalle seleccionada:",index)
   useEffect(() => {
     async function fetchData() {
       try {
-        setOrdenesDetalleUData(selectedOrdenesData.pedidos_detalle_ps_estatus_u); //Se ponen los datos en el useState pero solo los del subdocumento info_ad
+        setOrdenesDetalleUData(selectedOrdenesDetalleData.pedidos_detalle_ps_estatus_u); //Se ponen los datos en el useState pero solo los del subdocumento info_ad
         setLoadingTable(false);
       } catch (error) {
         console.error("Error al obtener datos:", error);
@@ -36,7 +39,7 @@ const OrdenesDetalleUTable = ({
   }, []);
 
   const handleReload = async () => {
-    const OneOrdenesData = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
+    const OneOrdenesData = await GetOneOrderByID(selectedOrdenesDetalleData.IdInstitutoOK,selectedOrdenesDetalleData.IdNegocioOK,selectedOrdenesDetalleData.IdOrdenOK);
     //setOrdenesEstatusData(OneOrdenesData.ordenes_estatus);
     setSelectedRowIndex(null);
   };
@@ -101,6 +104,9 @@ const OrdenesDetalleUTable = ({
         <OrdenesDetalleUModal
           showModal={showModal}
           setShowModal={setShowModal}
+          row={selectedOrdenesData}
+          selectRow={selectedOrdenesDetalleData}
+          index={index}
           //handleReload={handleReload}
           onClose={() => setShowModal(false)}
 
