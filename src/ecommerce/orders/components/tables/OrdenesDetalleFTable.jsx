@@ -5,24 +5,29 @@ import {
   Tooltip,
   Dialog
 } from "@mui/material";
+import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { MaterialReactTable } from "material-react-table";
+
 //import InfoIcon from "@mui/icons-material/Info";
 //import { Componente } from "@mui/material"; // Sustituye "Componente" por el nombre del componente que desees importar
 
 import OrdenesDetalleFModal from "../modals/OrdenesDetalleFModal"; 
 import { OrdenesDetalleFModel } from "../../models/OrdenesDetalleFModel";
+import BarActionsTable from "../../../../share/components/elements/bars/BarActionsTable";
+
 
 import { useSelector } from "react-redux";
 
 const OrdenesDetalleFTable = ({
-  
+
 }) => {
   const [loadingTable, setLoadingTable] = useState(true);
   const [OrdenesDetalleData, setOrdenesDetalleData] = useState([]);
-  const [pedidosDetalleEstatusF, setPedidosDetalleEstatusF] = useState([]);
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null); //Para saber cual es la fila y pasarla para el color de la tabla
+
   const [showModal, setShowModal] = useState(false);
     //Con redux sacar la data que se envió del otro archivo (ShippingsTable)
-    const selectedOrdenesData = useSelector((state) => state.ordenesReducer.selectedOrdenesDetalleData);
+  const selectedOrdenesData = useSelector((state) => state.ordenesReducer.selectedOrdenesDetalleData);
 
   useEffect(() => {
     async function fetchData() {
@@ -35,6 +40,12 @@ const OrdenesDetalleFTable = ({
     }
     fetchData();
   }, []);
+
+  const handleReload = async () => {
+    const OneOrdenesData = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
+    setOrdenesEstatusData(OneOrdenesData.ordenes_estatus);
+    setSelectedRowIndex(null);
+  };
 
   const OrdenesDetalleColumn = [
     {
@@ -56,17 +67,49 @@ const OrdenesDetalleFTable = ({
 
   return (
     <Box>
+      <Box>
       <MaterialReactTable
         columns={OrdenesDetalleColumn}
         data={OrdenesDetalleData}
         state={{ isLoading: loadingTable }}
-        // Otras props de tu tabla...
-      />
+        initialState={{ density: "compact", showGlobalFilter: true }}
+        enableColumnActions={false}
+        localization={MRT_Localization_ES}
+        enableStickyHeader
+        muiTableContainerProps={{
+          sx: {
+            "&::-webkit-scrollbar": { display: "none" },
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+            overflow: "auto",
+            width: "parent",
+          },
+        }}
+        positionToolbarAlertBanner="bottom"
+        renderTopToolbarCustomActions={({ table }) => (
+            <BarActionsTable
+          handleBtnAdd={() => setShowModal(true)}
+          handleBtnDetails={() => console.log("clic handleBtnDetails")}
+          handleBtnReload={() => handleReload()}
+        />
+        )}
+        muiTableBodyRowProps={({ row }) => ({
+          onClick: () => {
+            setSelectedRowIndex(row.original);
+            setSelectedRowIndex(row.id);
+          },
+        })}
+    />
+    </Box>
 
       {/* Modal para la vista detallada */}
       <Dialog open={showModal} >
         <OrdenesDetalleFModal
-          open={showModal}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          handleReload={handleReload}
+          onClose={() => setShowModal(false)}
+
           // ...otros props necesarios
         />
       </Dialog>
