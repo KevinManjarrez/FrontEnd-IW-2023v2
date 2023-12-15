@@ -32,8 +32,13 @@ import MyAutoComplete from "../../../../share/components/elements/atomos/MyAutoC
 //FIC: Formik - Yup
 import { useFormik } from "formik";
 import * as Yup from "yup";
+
+//helpers
+import { OrdenesInfoAdValues } from "../../helpers/OrdenesInfoAdValues";
 //SERVICES
 import { PatchInfoAd } from "../../service/remote/update/PatchInfoAd";
+import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
+import { UpdatePatchOneOrder } from "../../service/remote/post/AddOrdenesEstatus";
 
 
 const InfoAdModal = ({ 
@@ -84,7 +89,14 @@ const InfoAdModal = ({
           //console.log(values);
 
             try {
-                let model = InfoAdModel();
+                //infoAd.Secuencia = Number(infoAd.Secuencia);
+                const ordenExistente = await GetOneOrderByID(productSel.IdInstitutoOK,productSel.IdNegocioOK,productSel.IdOrdenOK);
+                console.log("Realizo",ordenExistente)
+                const EstatusOrdenes = OrdenesInfoAdValues(values, ordenExistente);
+
+                console.log("<<Ordenes info ad>>", EstatusOrdenes);
+                await UpdatePatchOneOrder(productSel.IdInstitutoOK,productSel.IdNegocioOK,productSel.IdOrdenOK,EstatusOrdenes);
+                /*let model = InfoAdModel();
                 const infoAd = {
                 ...model,
                 ...values,
@@ -100,7 +112,7 @@ const InfoAdModal = ({
                 };
                 console.log(" ks",ordenInfoAd.ordenes_info_ad);
                 await PatchInfoAd(ordenInfoAd.IdInstitutoOK,ordenInfoAd.IdNegocioOK,ordenInfoAd.IdOrdenOK, dataToUpdate);
-
+                    */          
                 setMensajeExitoAlert("Info Adicional creada y guardada Correctamente");
                 handleReload();
             } catch (e) {

@@ -19,7 +19,7 @@ import {
   Switch,
 } from "@mui/material";
 
-import { InfoAdModel } from "../../models/InfoAdModel";
+//import { InfoAdModel } from "../../models/InfoAdModel";
 import useEtiquetas from "../../../orders/service/remote/useEtiquetas";
 import MyAutoComplete from "../../../../share/components/elements/atomos/MyAutoComplete";
 
@@ -29,6 +29,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {  PatchInfoAd } from "../../service/remote/update/PatchInfoAd";
+import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 import {cloneDeep} from 'lodash/cloneDeep';
 
 
@@ -72,12 +73,14 @@ const UpdateInfoAd = ({
       setLoading(true);
       try {
         //Modificar el producto con el Formulario
-        let product = JSON.parse(JSON.stringify(productSel));
-        console.log("antes:",product)
+        //let product = JSON.parse(JSON.stringify(productSel));
+        console.log("algo",productSel)
+        const ordenExistente = await GetOneOrderByID(productSel.IdInstitutoOK,productSel.IdNegocioOK,productSel.IdOrdenOK);
+        console.log("antes:",ordenExistente)
         
         if (idRowSel >= 0) {
           // Crea una copia del objeto en idRowSel y modifica la propiedad IdEtiquetaOK
-          product.ordenes_info_ad[idRowSel]= {
+          ordenExistente.ordenes_info_ad[idRowSel]= {
             //...product.ordenes_info_ad[idRowSel],
               IdEtiquetaOK: values.IdEtiquetaOK,
               IdEtiqueta: values.IdEtiqueta,
@@ -88,12 +91,12 @@ const UpdateInfoAd = ({
           
         }
         
-        console.log("temp:",product)
+        console.log("temp:",ordenExistente)
         const dataToUpdate = {
-          ordenes_info_ad: product.ordenes_info_ad,
+          ordenes_info_ad: ordenExistente.ordenes_info_ad,
         };
         console.log("data",dataToUpdate);
-        await PatchInfoAd(product.IdInstitutoOK,product.IdNegocioOK,product.IdOrdenOK, dataToUpdate);
+        await PatchInfoAd(ordenExistente.IdInstitutoOK,ordenExistente.IdNegocioOK,ordenExistente.IdOrdenOK, dataToUpdate);
         
         setMensajeExitoAlert("InfoAd modificada Correctamente");
         handleReload();
