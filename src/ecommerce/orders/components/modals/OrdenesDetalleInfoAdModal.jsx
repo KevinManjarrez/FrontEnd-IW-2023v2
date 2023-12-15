@@ -22,13 +22,13 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 // ... otras importaciones necesarias
 import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
-import { OrdenesDetallesUValues } from "../../helpers/OrdenesDetallesUValues";
+import { OrdenesDetallesInfoAdValues } from "../../helpers/OrdenesDetalleInfoAdValues";
 import { UpdatePatchOneOrder } from "../../service/remote/post/AddOrdenesEstatus";
 import { GetAllLabels } from "../../../labels/services/remote/get/GetAllLabels";
 
-const OrdenesDetalleUModal = ({
-  showModalU,
-  setShowModalU,
+const OrdenesDetalleInfoAdModal = ({
+  showModalInfoAd,
+  setShowModalInfoAd,
   row,
   index,
   handleReload
@@ -62,14 +62,14 @@ const OrdenesDetalleUModal = ({
         //console.log(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK)
         const ordenExistente = await GetOneOrderByID(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK);
 
-        console.log("<<Ordenes>>",ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_u);
+        console.log("<<Ordenes>>",ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_info_ad);
         
-        for (let i = 0; i < ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_u.length; i++) {
+        for (let i = 0; i < ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_info_ad.length; i++) {
             console.log("Entro")
-            ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_u[i]= {
-                IdTipoEstatusOK: ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_u[i].IdTipoEstatusOK,
+            ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_info_ad[i]= {
+                IdTipoEstatusOK: ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_info_ad[i].IdTipoEstatusOK,
                 Actual: "N",
-                Observacion:ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_u[i].Observacion
+                Observacion:ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_info_ad[i].Observacion
               };
               console.log("Realizo",ordenExistente)
         }
@@ -78,7 +78,7 @@ const OrdenesDetalleUModal = ({
         //ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_u.push(values);
         //console.log(ordenExistente);
 
-        const EstatusOrdenes = OrdenesDetallesUValues(values, ordenExistente,index);
+        const EstatusOrdenes = OrdenesDetallesInfoAdValues(values, ordenExistente,index);
         //const EstatusOrdenes = OrdenesEstatusValues(values);
         
         //console.log("<<Ordenes>>", EstatusOrdenes);
@@ -130,8 +130,8 @@ const OrdenesDetalleUModal = ({
   },[]);
 
   return (
-    <Dialog open={showModalU}
-    onClose={() => setShowModalU(false)}
+    <Dialog open={showModalInfoAd}
+    onClose={() => setShowModalInfoAd(false)}
     fullWidth  
     >
       <form onSubmit={(e) => {formik.handleSubmit(e)}}>
@@ -204,7 +204,7 @@ const OrdenesDetalleUModal = ({
             loadingPosition="start"
             startIcon={<CloseIcon />}
             variant="outlined"
-            onClick={() => setShowModalU(false)}
+            onClick={() => setShowModalInfoAd(false)}
           >
             <span>CERRAR</span>
           </LoadingButton>
@@ -226,4 +226,4 @@ const OrdenesDetalleUModal = ({
   );
 };
 
-export default OrdenesDetalleUModal;
+export default OrdenesDetalleInfoAdModal;
