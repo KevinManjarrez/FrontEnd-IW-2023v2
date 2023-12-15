@@ -400,7 +400,7 @@ const AddOrdenesModal = ({
             aria-label="TipoOrden"
           >
             {OrdenesValuesLabel.map((option, index) => (
-              <MenuItem key={option.IdValorOK} value={option.key}>
+              <MenuItem key={option.IdValorOK} value={`IdTipoOrdenes-${option.key}`}>
                 {option.IdValorOK}
               </MenuItem>
             ))}
@@ -417,7 +417,7 @@ const AddOrdenesModal = ({
             aria-label="Rol"
           >
             {RolValuesLabel.map((option, index) => (
-              <MenuItem key={option.IdValorOK} value={option.key}>
+              <MenuItem key={option.IdValorOK} value={`IdTipoRol-${option.key}`}>
                 {option.IdValorOK}
               </MenuItem>
             ))}
