@@ -147,7 +147,8 @@ const OrdenesDetalleColumn = [
 
     if (res) {
       try {
-        const infoAd = [...selectedOrdenesData.ordenes_detalle];
+        const OneOrdenesData = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
+        const infoAd = [...OneOrdenesData.ordenes_detalle];
         infoAd.splice(selectedRowIndex, 1);
         const dataToUpdate = {
           ordenes_detalle: infoAd,
@@ -156,7 +157,7 @@ const OrdenesDetalleColumn = [
         console.log("se",selectedOrdenesData.IdInstitutoOK)
         await PatchOrdenesDetalle?.(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK, dataToUpdate);
         showMensajeConfirm("Info Ad Eliminado");
-        //handleReload();
+        handleReload();
       } catch (e) {
         console.error("handleDelete", e);
         showMensajeError(`No se pudo Eliminar el Info Ad`);

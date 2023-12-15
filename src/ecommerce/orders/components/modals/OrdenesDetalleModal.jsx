@@ -89,8 +89,9 @@ const OrdenesDetalleModal = ({
                 // Utiliza la función de actualización si estamos en modo de edición
                 
                 await PatchOrdenesDetalle(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK,DetalleOrdenes); //se puede sacar el objectid con row._id para lo del fic aaaaaaaaaaaaaaaaaaa
-                setMensajeExitoAlert("Envío actualizado Correctamente");
+                
                 handleReload(); //usar la función para volver a cargar
+                setMensajeExitoAlert("Envío actualizado Correctamente");
       } catch (e) {
         setMensajeErrorAlert("No se pudo registrar");
       }

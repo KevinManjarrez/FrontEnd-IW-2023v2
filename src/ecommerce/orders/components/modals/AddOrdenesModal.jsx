@@ -189,7 +189,7 @@ const AddOrdenesModal = ({
     initialValues: {
       IdInstitutoOK: "",
       IdNegocioOK: "",
-      IdOrdenOK: `9001-${IdGen}`,
+      IdOrdenOK: "",
       IdOrdenBK: "",
       IdTipoOrdenOK: "",
       IdRolOK: "",
@@ -258,6 +258,20 @@ const AddOrdenesModal = ({
 
   const { etiquetas, etiquetaEspecifica } = useInstitutos({IdInstitutoOK: formik.values.IdInstitutoOK || "",});
 
+  useEffect(() => {
+      if (formik.values.IdInstitutoOK && formik.values.IdNegocioOK  > 0) {
+          updateIdOrdenOK(); // Actualizar IdEntregaOK al cambiar IdInstitutoOK o IdNegocioOK
+      }
+  }, [formik.values.IdInstitutoOK, formik.values.IdNegocioOK]);
+
+  const updateIdOrdenOK = () => {       
+    formik.setFieldValue( 
+        "IdOrdenOK",
+        `${formik.values.IdInstitutoOK}-${formik.values.IdNegocioOK}-${IdGen}`
+    );
+};
+
+
   return (
     <Dialog
       open={AddOrdenesShowModal}
@@ -323,29 +337,6 @@ const AddOrdenesModal = ({
                         error={ formik.touched.IdInstitutoOK && Boolean(formik.errors.IdInstitutoOK) }
                         helperText={ formik.touched.IdInstitutoOK && formik.errors.IdInstitutoOK }
                     />
-
-
-          {/*<TextField
-            id="IdInstitutoOK"
-            label="IdInstitutoOK*"
-                      value={formik.values.IdInstitutoOK}
-            /* onChange={formik.handleChange} */}
-            {/*...commonTextFieldProps}
-            error={formik.touched.IdInstitutoOK && Boolean(formik.errors.IdInstitutoOK)}
-            helperText={formik.touched.IdInstitutoOK && formik.errors.IdInstitutoOK}
-            disabled={true}
-          />*/}
-          {/*<TextField
-            id="IdNegocioOK"
-            label="IdNegocioOK*"
-            value={formik.values.IdNegocioOK}
-            
-            /* onChange={formik.handleChange} */}
-            {/*...commonTextFieldProps}
-            error={formik.touched.IdNegocioOK && Boolean(formik.errors.IdNegocioOK)}
-            helperText={formik.touched.IdNegocioOK && formik.errors.IdNegocioOK}
-            disabled={true}
-          />*/}
           <FormControl fullWidth margin="normal">
                     <InputLabel>Selecciona un Negocio</InputLabel>
                     <Select
@@ -400,7 +391,7 @@ const AddOrdenesModal = ({
             aria-label="TipoOrden"
           >
             {OrdenesValuesLabel.map((option, index) => (
-              <MenuItem key={option.IdValorOK} value={option.key}>
+              <MenuItem key={option.IdValorOK} value={`IdTipoOrdenes-${option.key}`}>
                 {option.IdValorOK}
               </MenuItem>
             ))}
@@ -417,7 +408,7 @@ const AddOrdenesModal = ({
             aria-label="Rol"
           >
             {RolValuesLabel.map((option, index) => (
-              <MenuItem key={option.IdValorOK} value={option.key}>
+              <MenuItem key={option.IdValorOK} value={`IdTipoRol-${option.key}`}>
                 {option.IdValorOK}
               </MenuItem>
             ))}
