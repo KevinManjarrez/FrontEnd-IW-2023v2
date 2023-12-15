@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GetAllProdServ } from '../../../products/services/remote/get/GetAllProdServ';
-function useProducts({ IdProductoOK }) {
+function useProducts({ IdProdServOK }) {
 const [etiquetas, setEtiquetas] = useState([]);
 useEffect(() => {
     async function fetchData() {
@@ -16,10 +16,10 @@ useEffect(() => {
 }, []);
 
 let etiquetaEspecifica = null
-if(IdProductoOK){ //Si recibe IdInstitutoOK
-etiquetaEspecifica= etiquetas.find(etiqueta => etiqueta.IdProductoOK === IdProductoOK) ;
-}else if(!IdProductoOK){//Si NO recibe IdInstitutoOK
-etiquetaEspecifica= etiquetas.find(etiqueta => etiqueta.IdProductoOK === IdProductoOK)
+if(IdProdServOK){ //Si recibe IdInstitutoOK
+etiquetaEspecifica= etiquetas.find(etiqueta => etiqueta.IdProdServOK === IdProdServOK) ;
+}else if(!IdProdServOK){//Si NO recibe IdInstitutoOK
+etiquetaEspecifica= etiquetas.find(etiqueta => etiqueta.IdProdServOK === IdProdServOK)
 }
 
 return { etiquetas, etiquetaEspecifica };
