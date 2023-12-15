@@ -16,8 +16,7 @@ export function OrdenesDetalleModel() {
         pedidos_detalle_ps_estatus_u: [],
         pedidos_detalle_ps_estatus_p: [],
         pedidos_detalle_ps_info_ad: [],
-        ordenes_presenta_ps_paq: [],
-        detail_row: getDetailRow(),
+        detail_row: getDetailRow()
     };
     return ordenes_detalle
 };
