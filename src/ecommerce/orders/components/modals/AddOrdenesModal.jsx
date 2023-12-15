@@ -402,6 +402,7 @@ const AddOrdenesModal = ({
             {...commonTextFieldProps}
             error={formik.touched.IdOrdenBK && Boolean(formik.errors.IdOrdenBK)}
             helperText={formik.touched.IdOrdenBK && formik.errors.IdOrdenBK}
+            disabled={true}
           />
           <FormControl fullWidth margin="normal">
           <InputLabel htmlFor="dynamic-select-tipo-orden">Tipo de Orden</InputLabel>

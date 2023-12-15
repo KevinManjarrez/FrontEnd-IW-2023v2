@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert,InputLabel, Select, MenuItem  } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Typography, TextField, DialogActions, Box, Alert,InputLabel, Select, MenuItem,Checkbox,FormControlLabel  } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
@@ -21,18 +21,19 @@ const OrdenesEstatusModal = ({ OrdenesEstatusShowModal, setOrdenesEstatusShowMod
     const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
     const [Loading, setLoading] = useState(false);
     const [OrdenesValuesLabel, setOrdenesValuesLabel] = useState([]);
+    const [isChecked, setIsChecked] = useState(false);
 
     //Para ver la data que trae el documento completo desde el dispatch de ShippingsTable
     //FIC: Definition Formik y Yup.
     const formik = useFormik({
         initialValues: {
             IdTipoEstatusOK: "",
-            Actual: "S",
+            Actual: false,
             Observacion: ""
         },
         validationSchema: Yup.object({
             IdTipoEstatusOK: Yup.string().required("Campo requerido"),
-            Actual: Yup.string().required("Campo requerido").max(1, 'Solo se permite una letra').matches(/^[SN]$/, 'Solo se permite un caracter S/N'),
+            Actual: Yup.boolean().required("Campo requerido"),
             
         }),
         onSubmit: async (values) => {
@@ -61,6 +62,8 @@ const OrdenesEstatusModal = ({ OrdenesEstatusShowModal, setOrdenesEstatusShowMod
                       };
                       console.log("Realizo",ordenExistente)
                 }
+                values.Actual == true ? (values.Actual = "S") : (values.Actual = "N");
+
                 const EstatusOrdenes = OrdenesEstatusValues(values, ordenExistente);
                 //const EstatusOrdenes = OrdenesEstatusValues(values);
                 
@@ -158,23 +161,34 @@ const OrdenesEstatusModal = ({ OrdenesEstatusShowModal, setOrdenesEstatusShowMod
                         </MenuItem>
                         ))}
                     </Select>
-                    <TextField
-                        id="Actual"
+                    <FormControlLabel
+                        control={
+                        <Checkbox
+                            id="Actual"
+                            checked={formik.values.Actual}  // Suponiendo que formik.values.Actual es un booleano
+                            onChange={(event) => {
+                            formik.setFieldValue('Actual', event.target.checked);
+                            }}
+                            {...commonTextFieldProps}
+                            disabled={!!mensajeExitoAlert}
+                        />
+                        }
                         label="Actual*"
-                        value={formik.values.Actual}
-                        {...commonTextFieldProps}
-                        error={ formik.touched.Actual && Boolean(formik.errors.Actual) }
-                        helperText={ formik.touched.Actual && formik.errors.Actual }
-                        disabled
+                        error={formik.touched.Actual && Boolean(formik.errors.Actual)}
+                        helperText={formik.touched.Actual && formik.errors.Actual}
                     />
                     <TextField
                         id="Observacion"
                         label="Observacion*"
+                        multiline
+                        rows={4}    
+                        maxRows={10}
                         value={formik.values.Observacion}
                         {...commonTextFieldProps}
                         error={ formik.touched.Observacion && Boolean(formik.errors.Observacion) }
                         helperText={ formik.touched.Observacion && formik.errors.Observacion }
                     />
+                    
                 </DialogContent>
                 {/* FIC: Aqui van las acciones del usuario como son las alertas o botones */}
                 <DialogActions
