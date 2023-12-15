@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
 import {
   Box,
-  IconButton,
-  Tooltip,
   Dialog
 } from "@mui/material";
-import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { MaterialReactTable } from "material-react-table";
+import { MRT_Localization_ES } from "material-react-table/locales/es";
+import React, { useEffect, useState } from "react";
 
 //import InfoIcon from "@mui/icons-material/Info";
 //import { Componente } from "@mui/material"; // Sustituye "Componente" por el nombre del componente que desees importar
 
-import OrdenesDetalleFModal from "../modals/OrdenesDetalleFModal"; 
-import { OrdenesDetalleFModel } from "../../models/OrdenesDetalleFModel";
 import BarActionsTable from "../../../../share/components/elements/bars/BarActionsTable";
+import OrdenesDetalleFModal from "../modals/OrdenesDetalleFModal";
 
 
 import { useSelector } from "react-redux";
