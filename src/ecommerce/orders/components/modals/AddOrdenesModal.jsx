@@ -337,29 +337,6 @@ const AddOrdenesModal = ({
                         error={ formik.touched.IdInstitutoOK && Boolean(formik.errors.IdInstitutoOK) }
                         helperText={ formik.touched.IdInstitutoOK && formik.errors.IdInstitutoOK }
                     />
-
-
-          {/*<TextField
-            id="IdInstitutoOK"
-            label="IdInstitutoOK*"
-                      value={formik.values.IdInstitutoOK}
-            /* onChange={formik.handleChange} */}
-            {/*...commonTextFieldProps}
-            error={formik.touched.IdInstitutoOK && Boolean(formik.errors.IdInstitutoOK)}
-            helperText={formik.touched.IdInstitutoOK && formik.errors.IdInstitutoOK}
-            disabled={true}
-          />*/}
-          {/*<TextField
-            id="IdNegocioOK"
-            label="IdNegocioOK*"
-            value={formik.values.IdNegocioOK}
-            
-            /* onChange={formik.handleChange} */}
-            {/*...commonTextFieldProps}
-            error={formik.touched.IdNegocioOK && Boolean(formik.errors.IdNegocioOK)}
-            helperText={formik.touched.IdNegocioOK && formik.errors.IdNegocioOK}
-            disabled={true}
-          />*/}
           <FormControl fullWidth margin="normal">
                     <InputLabel>Selecciona un Negocio</InputLabel>
                     <Select
@@ -402,7 +379,6 @@ const AddOrdenesModal = ({
             {...commonTextFieldProps}
             error={formik.touched.IdOrdenBK && Boolean(formik.errors.IdOrdenBK)}
             helperText={formik.touched.IdOrdenBK && formik.errors.IdOrdenBK}
-            disabled={true}
           />
           <FormControl fullWidth margin="normal">
           <InputLabel htmlFor="dynamic-select-tipo-orden">Tipo de Orden</InputLabel>
