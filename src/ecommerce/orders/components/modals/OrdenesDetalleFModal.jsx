@@ -7,7 +7,7 @@ import {
   TextField,
   DialogActions,
   Box,
-  Alert,
+  Alert
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
@@ -20,9 +20,8 @@ import { useFormik } from "formik";
 
 const OrdenesDetalleFModal = ({
   showModal,
-  setShowModal,
-  row,
-  handleReload
+  setShowModal
+  //handleReload
   // Otros props que desees pasar al modal
 }) => {
   const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
@@ -48,7 +47,7 @@ const OrdenesDetalleFModal = ({
       try {
         // Lógica para guardar la información en la base de datos
         setMensajeExitoAlert("Envío actualizado correctamente");
-        handleReload();
+        //handleReload();
       } catch (e) {
         setMensajeErrorAlert("No se pudo registrar");
       }
@@ -65,8 +64,11 @@ const OrdenesDetalleFModal = ({
   };
 
   return (
-    <Dialog open={showModal} onClose={setShowModal(false)} fullWidth>
-      <form onSubmit={(e) => formik.handleSubmit(e)}>
+    <Dialog open={showModal}
+    onClose={() => setShowModal(false)}
+            fullWidth
+    >
+      <form onSubmit={(e) => {formik.handleSubmit(e)}}>
         <DialogTitle>
           <Typography>
             <strong>Agregar Nuevo Estado de la Orden</strong>
@@ -127,7 +129,7 @@ const OrdenesDetalleFModal = ({
             loadingPosition="start"
             startIcon={<CloseIcon />}
             variant="outlined"
-            onClick={setShowModal(false)}
+            onClick={() => setShowModal(false)}
           >
             <span>CERRAR</span>
           </LoadingButton>

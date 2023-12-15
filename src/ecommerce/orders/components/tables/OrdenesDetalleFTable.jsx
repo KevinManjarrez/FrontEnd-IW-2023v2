@@ -43,7 +43,7 @@ const OrdenesDetalleFTable = ({
 
   const handleReload = async () => {
     const OneOrdenesData = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
-    setOrdenesEstatusData(OneOrdenesData.ordenes_estatus);
+    //setOrdenesEstatusData(OneOrdenesData.ordenes_estatus);
     setSelectedRowIndex(null);
   };
 
@@ -103,11 +103,11 @@ const OrdenesDetalleFTable = ({
     </Box>
 
       {/* Modal para la vista detallada */}
-      <Dialog open={showModal} >
+      <Dialog open={showModal}>
         <OrdenesDetalleFModal
           showModal={showModal}
           setShowModal={setShowModal}
-          handleReload={handleReload}
+          //handleReload={handleReload}
           onClose={() => setShowModal(false)}
 
           // ...otros props necesarios
