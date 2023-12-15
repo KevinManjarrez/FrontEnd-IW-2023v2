@@ -18,7 +18,7 @@ import { useFormik } from "formik";
 //import { Componente } from "@mui/material"; // Sustituye "Componente" por el nombre del componente que desees importar
 
 
-const OrdenesDetalleFModal = ({
+const OrdenesDetalleVModal = ({
   showModal,
   setShowModal,
   row,
@@ -151,4 +151,4 @@ const OrdenesDetalleFModal = ({
   );
 };
 
-export default OrdenesDetalleFModal;
+export default OrdenesDetalleVModal;
