@@ -18,7 +18,7 @@ import { useFormik } from "formik";
 //import { Componente } from "@mui/material"; // Sustituye "Componente" por el nombre del componente que desees importar
 
 
-const OrdenesDetalleFModal = ({
+const OrdenesDetalleUModal = ({
   showModal,
   setShowModal
   //handleReload
@@ -129,7 +129,7 @@ const OrdenesDetalleFModal = ({
             loadingPosition="start"
             startIcon={<CloseIcon />}
             variant="outlined"
-            onClick={()=>setShowModal(false)}
+            onClick={() => setShowModal(false)}
           >
             <span>CERRAR</span>
           </LoadingButton>
@@ -151,4 +151,4 @@ const OrdenesDetalleFModal = ({
   );
 };
 
-export default OrdenesDetalleFModal;
+export default OrdenesDetalleUModal;

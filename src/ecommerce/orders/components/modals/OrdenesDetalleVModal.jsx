@@ -7,7 +7,7 @@ import {
   TextField,
   DialogActions,
   Box,
-  Alert
+  Alert,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
@@ -18,10 +18,11 @@ import { useFormik } from "formik";
 //import { Componente } from "@mui/material"; // Sustituye "Componente" por el nombre del componente que desees importar
 
 
-const OrdenesDetalleFModal = ({
+const OrdenesDetalleVModal = ({
   showModal,
-  setShowModal
-  //handleReload
+  setShowModal,
+  row,
+  handleReload
   // Otros props que desees pasar al modal
 }) => {
   const [mensajeErrorAlert, setMensajeErrorAlert] = useState("");
@@ -47,7 +48,7 @@ const OrdenesDetalleFModal = ({
       try {
         // Lógica para guardar la información en la base de datos
         setMensajeExitoAlert("Envío actualizado correctamente");
-        //handleReload();
+        handleReload();
       } catch (e) {
         setMensajeErrorAlert("No se pudo registrar");
       }
@@ -64,11 +65,10 @@ const OrdenesDetalleFModal = ({
   };
 
   return (
-    <Dialog open={showModal}
+    <Dialog open={showModal} 
     onClose={() => setShowModal(false)}
-            fullWidth
-    >
-      <form onSubmit={(e) => {formik.handleSubmit(e)}}>
+    fullWidth>
+      <form onSubmit={(e) => formik.handleSubmit(e)}>
         <DialogTitle>
           <Typography>
             <strong>Agregar Nuevo Estado de la Orden</strong>
@@ -151,4 +151,4 @@ const OrdenesDetalleFModal = ({
   );
 };
 
-export default OrdenesDetalleFModal;
+export default OrdenesDetalleVModal;
