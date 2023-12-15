@@ -226,7 +226,7 @@ const PatchOrdenesModal = ({
           {/* FIC: Campos de captura o selección */}
           <Stack direction="row" alignItems="center">
         <MyAutoComplete
-          disabled={!!mensajeExitoAlert || isNuevoInstituto}
+          
           label="Selecciona un Instituto"
           options={etiquetas}
           displayProp="IdInstitutoOK"
@@ -235,16 +235,19 @@ const PatchOrdenesModal = ({
             formik.values.IdInstitutoOK = selectedValue ? selectedValue?.IdInstitutoOK : "";
             setRefresh(!refresh);
           }}
+          disabled
         />
         <Tooltip title="Agrega manualmente una etiqueta nueva">
           <FormControlLabel
             sx={{ ml: 2 }}
             control={<Switch defaultChecked />}
             label={isNuevoInstituto ? "Agregar Nuevo Instituto" : "Seleccionar un Instituto"}
+            
             onChange={() => {
               setINuevoInstituto(!isNuevoInstituto);
               formik.values.IdInstitutoOK = "";
             }}
+            disabled
           />
         </Tooltip>
         </Stack> 
@@ -252,9 +255,11 @@ const PatchOrdenesModal = ({
             id="IdInstitutoOK"
             label="IdInstitutoOK*"
             value={formik.values.IdInstitutoOK}
+            
             {...commonTextFieldProps}
             error={ formik.touched.IdInstitutoOK && Boolean(formik.errors.IdInstitutoOK) }
             helperText={ formik.touched.IdInstitutoOK && formik.errors.IdInstitutoOK }
+            disabled
         />
         <FormControl fullWidth margin="normal">
           <InputLabel>Selecciona un Negocio</InputLabel>
@@ -264,7 +269,7 @@ const PatchOrdenesModal = ({
             onChange={formik.handleChange}
             name="IdNegocioOK" // Asegúrate de que coincida con el nombre del campo
             onBlur={formik.handleBlur}
-            disabled={!!mensajeExitoAlert}
+            disabled
             >
             {etiquetaEspecifica?.cat_negocios.map((seccion) => {
                 return (
