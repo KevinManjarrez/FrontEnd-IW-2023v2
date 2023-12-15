@@ -12,7 +12,7 @@ import { MaterialReactTable } from "material-react-table";
 //import { Componente } from "@mui/material"; // Sustituye "Componente" por el nombre del componente que desees importar
 
 import OrdenesDetallePModal from "../modals/OrdenesDetallePModal";
-
+import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 import BarActionsTable from "../../../../share/components/elements/bars/BarActionsTable";
 
 
@@ -28,11 +28,12 @@ const OrdenesDetallePTable = ({
   const [showModal, setShowModal] = useState(false);
     //Con redux sacar la data que se envió del otro archivo (ShippingsTable)
   const selectedOrdenesData = useSelector((state) => state.ordenesReducer.selectedOrdenesDetalleData);
-
+  const selectedOrdenesDetalleData = useSelector((state) => state.ordenesReducer.selectedOrdenesDetalleData);
   useEffect(() => {
     async function fetchData() {
       try {
-        setOrdenesDetallePData(selectedOrdenesData.pedidos_detalle_ps_estatus_p); //Se ponen los datos en el useState pero solo los del subdocumento info_ad
+        const OneOrdenesData = await GetOneOrderByID(selectedOrdenesDetalleData.IdInstitutoOK,selectedOrdenesDetalleData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
+        setOrdenesDetallePData(OneOrdenesData.pedidos_detalle_ps_estatus_p); //Se ponen los datos en el useState pero solo los del subdocumento info_ad
         setLoadingTable(false);
       } catch (error) {
         console.error("Error al obtener datos:", error);
@@ -43,7 +44,7 @@ const OrdenesDetallePTable = ({
 
   const handleReload = async () => {
     const OneOrdenesData = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
-    //setOrdenesEstatusData(OneOrdenesData.ordenes_estatus);
+    setOrdenesDetallePData(OneOrdenesData.ordenes_estatus);
     setSelectedRowIndex(null);
   };
 

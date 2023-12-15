@@ -100,7 +100,8 @@ const OrdenesDetalleColumn = [
     useEffect(() => {
       async function fetchData() {
         try {
-          setOrdenesDetalleData(selectedOrdenesData.ordenes_detalle); //Se ponen los datos en el useState pero solo los del subdocumento info_ad
+          const OneOrdenesData = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
+          setOrdenesDetalleData(OneOrdenesData.ordenes_detalle); //Se ponen los datos en el useState pero solo los del subdocumento info_ad
           setLoadingTable(false);
         } catch (error) {
           console.error("Error al obtener ordenes_estatus:", error);

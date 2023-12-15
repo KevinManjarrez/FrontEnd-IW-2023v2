@@ -47,7 +47,8 @@ const InfoAdTable = ({
   useEffect(() => {
     async function fetchData() {
       try {
-        setinfoAdEstatusData(selectedOrdenesData.ordenes_info_ad); //Se ponen los datos en el useState pero solo los del subdocumento info_ad
+        const OneOrdenesData = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
+        setinfoAdEstatusData(OneOrdenesData.ordenes_info_ad); //Se ponen los datos en el useState pero solo los del subdocumento info_ad
         setLoadingTable(false);
       } catch (error) {
         console.error("Error al obtener ordenes_info_ad:", error);
