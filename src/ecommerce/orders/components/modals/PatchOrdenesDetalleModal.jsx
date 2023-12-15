@@ -39,6 +39,7 @@ import useProducts from "../../service/remote/useProducts";
 import { AddOneInfoAd } from "../../service/remote/post/AddOneInfoAd";
 import { GetAllLabels } from "../../../labels/services/remote/get/GetAllLabels";
 import { PatchOrdenesDetalle } from "../../service/remote/update/PatchOdenesDetalle";
+import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 
 
 const PatchOrdenesDetalleModal = ({ 
@@ -91,12 +92,12 @@ const PatchOrdenesDetalleModal = ({
 
             try {
                 //Modificar el producto con el Formulario
-                let product = JSON.parse(JSON.stringify(row));
-                console.log("antes:",product)
+        const ordenExistente = await GetOneOrderByID(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK);
+        console.log("antes:",ordenExistente)
                 
                 if (selectedRowIndex >= 0) {
                   // Crea una copia del objeto en idRowSel y modifica la propiedad IdEtiquetaOK
-                  product.ordenes_detalle[selectedRowIndex]= {
+                  ordenExistente.ordenes_detalle[selectedRowIndex]= {
                     //...product.ordenes_info_ad[idRowSel],
                       IdProdServOK: values.IdProdServOK,
                       IdPresentaOK: values.IdPresentaOK,
@@ -112,15 +113,15 @@ const PatchOrdenesDetalleModal = ({
                   
                 }
                 
-                console.log("temp:",product)
+                console.log("temp:",ordenExistente)
                 const dataToUpdate = {
-                  ordenes_detalle: product.ordenes_detalle,
+                  ordenes_detalle: ordenExistente.ordenes_detalle,
                 };
                 console.log("data",dataToUpdate);
-                await PatchOrdenesDetalle(product.IdInstitutoOK,product.IdNegocioOK,product.IdOrdenOK, dataToUpdate);
+                await PatchOrdenesDetalle(ordenExistente.IdInstitutoOK,ordenExistente.IdNegocioOK,ordenExistente.IdOrdenOK, dataToUpdate);
                 
                 setMensajeExitoAlert("InfoAd modificada Correctamente");
-                //handleReload();
+                handleReload();
                 console.log("Se modifico")
             } catch (e) {
                 setMensajeErrorAlert("No se pudo crear la Info Adicional");
