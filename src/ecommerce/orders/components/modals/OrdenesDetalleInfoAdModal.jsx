@@ -108,7 +108,7 @@ const OrdenesDetalleInfoAdModal = ({
     try {
       const Labels = await GetAllLabels();
       const OrdenesTypes = Labels.find(
-        (label) => label.IdEtiquetaOK === "IdTipoEstatusUbicacionProdServ"
+        (label) => label.IdEtiquetaOK === "IdEstatusOrdenesVTA"
       );
       const valores = OrdenesTypes.valores; // Obtenemos el array de valores
       const IdValoresOK = valores.map((valor, index) => ({
@@ -153,7 +153,7 @@ const OrdenesDetalleInfoAdModal = ({
               aria-label="IdTipoEstatusOK"
           >
               {OrdenesValuesLabel.map((option, index) => (
-              <MenuItem key={option.IdValorOK} value={`IdTipoEstatusUbicacionProdServ-${option.key}`}>
+              <MenuItem key={option.IdValorOK} value={`IdEstatusOrdenesVTA-${option.key}`}>
                   {option.IdValorOK}
               </MenuItem>
               ))}

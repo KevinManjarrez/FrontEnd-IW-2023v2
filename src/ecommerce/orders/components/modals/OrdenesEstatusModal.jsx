@@ -97,7 +97,7 @@ const OrdenesEstatusModal = ({ OrdenesEstatusShowModal, setOrdenesEstatusShowMod
         try {
           const Labels = await GetAllLabels();
           const OrdenesTypes = Labels.find(
-            (label) => label.IdEtiquetaOK === "IdTipoOrdenes"
+            (label) => label.IdEtiquetaOK === "IdEstatusOrdenesVTA"
           );
           const valores = OrdenesTypes.valores; // Obtenemos el array de valores
           const IdValoresOK = valores.map((valor, index) => ({

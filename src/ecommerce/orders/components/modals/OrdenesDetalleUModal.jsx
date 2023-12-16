@@ -137,7 +137,7 @@ const OrdenesDetalleUModal = ({
       <form onSubmit={(e) => {formik.handleSubmit(e)}}>
         <DialogTitle>
           <Typography>
-            <strong>Agregar Nuevo Estado de la Orden</strong>
+            <strong>Agregar Nuevo Estado de Ubicacion</strong>
           </Typography>
         </DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column" }}
