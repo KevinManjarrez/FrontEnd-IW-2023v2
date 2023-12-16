@@ -43,21 +43,13 @@ const OrdenesDetalleInfoAdTable = ({
   };
 
   const OrdenesDetalleInfoAdColumn = [
-    {
-        accessorKey: "IdTipoEstatusOK",
-        header: "Id Tipo Estatus OK",
-        size: 30, //small column
-      },
+    
       {
         accessorKey: "Actual",
         header: "Actual",
         size: 30, //small column
       },
-      {
-        accessorKey: "Observacion",
-        header: "Observacion",
-        size: 150, //small column
-      },
+      
   ];
 
   return (
