@@ -97,7 +97,7 @@ const OrdenesDetalleVModal = ({
     try {
       const Labels = await GetAllLabels();
       const OrdenesTypes = Labels.find(
-        (label) => label.IdEtiquetaOK === "IdTipoEstatusUbicacionProdServ"
+        (label) => label.IdEtiquetaOK === "IdTipoEstatusVentaProdServ"
       );
       const valores = OrdenesTypes.valores; // Obtenemos el array de valores
       const IdValoresOK = valores.map((valor, index) => ({
@@ -125,11 +125,11 @@ const OrdenesDetalleVModal = ({
       <form onSubmit={(e) => formik.handleSubmit(e)}>
         <DialogTitle>
           <Typography>
-            <strong>Agregar Nuevo Estado de la Orden</strong>
+            <strong>Agregar Nuevo Estado de la Venta</strong>
           </Typography>
         </DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column" }} dividers>
-        <InputLabel htmlFor="dynamic-select-tipo-orden">Estatus Fisico del Producto/Servicio</InputLabel>
+        <InputLabel htmlFor="dynamic-select-tipo-orden">Estatus Venta del Producto/Servicio</InputLabel>
           <Select
               id="dynamic-select-tipo-orden"
               value={formik.values.IdTipoEstatusOK}
@@ -139,7 +139,7 @@ const OrdenesDetalleVModal = ({
               aria-label="IdTipoEstatusOK"
           >
               {OrdenesValuesLabel.map((option, index) => (
-              <MenuItem key={option.IdValorOK} value={`IdTipoEstatusUbicacionProdServ-${option.key}`}>
+              <MenuItem key={option.IdValorOK} value={`IdTipoEstatusVentaProdServ-${option.key}`}>
                   {option.IdValorOK}
               </MenuItem>
               ))}
