@@ -6,10 +6,9 @@ import {
 import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { MaterialReactTable } from "material-react-table";
 
-import OrdenesDetalleFModal from "../modals/OrdenesDetalleFModal";
+import OrdenesDetalleFModal from "../modals/OrdenesDetalleFModal"; 
 import BarActionsTable from "../../../../share/components/elements/bars/BarActionsTable";
 import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
-
 
 import { useSelector } from "react-redux";
 
@@ -22,8 +21,8 @@ const OrdenesDetalleFTable = ({
 
   const [showModalF, setShowModalF] = useState(false);
     //Con redux sacar la data que se envió del otro archivo (ShippingsTable)
-  //const selectedOrdenesDetalleData = useSelector((state) => state.ordenesReducer.selectedOrdenesDetalleData);
   const selectedOrdenesData = useSelector((state) => state.ordenesReducer.selectedOrdenesData);
+
   const index=useSelector((state) => state.ordenesReducer.index)
   
   useEffect(() => {
@@ -101,7 +100,7 @@ const OrdenesDetalleFTable = ({
     </Box>
 
       {/* Modal para la vista detallada */}
-      <Dialog open={showModalF}>
+      <Dialog open={showModalF} >
         <OrdenesDetalleFModal
           showModalF={showModalF}
           setShowModalF={setShowModalF}
