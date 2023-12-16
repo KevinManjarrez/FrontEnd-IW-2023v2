@@ -6,10 +6,9 @@ export const OrdenesDetallesInfoAdValues = (values, ordenesDetallesInfoAd,index)
   let OrdenesDetallesInfoAd = ordenesDetallesInfoAd || OrdenesDetalleUModel();
   // Crear un nuevo objeto de estatus
   let nuevoDetalleU = {
-    
+    IdTipoEstatusOK: values.IdTipoEstatusOK,
     Actual: values.Actual,
-    
-    // Añadir otros campos si es necesario
+    Observacion: values.Observacion,
   };
 
   // Agregar el nuevo objeto de estatus al array existente

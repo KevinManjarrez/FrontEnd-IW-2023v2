@@ -42,12 +42,12 @@ const OrdenesDetalleInfoAdModal = ({
 
   const formik = useFormik({
     initialValues: {
-        
-        Actual: true,
-        
+      IdTipoEstatusOK: "",
+      Actual: true,
+      Observacion: ""
     },
     validationSchema: Yup.object({
-        
+      IdTipoEstatusOK: Yup.string().required("Campo requerido"),
         Actual: Yup.boolean().required("Campo requerido"),
       }),
     onSubmit: async (values) => {
@@ -144,7 +144,20 @@ const OrdenesDetalleInfoAdModal = ({
         dividers
         >
        <InputLabel htmlFor="dynamic-select-tipo-orden">Estatus de la Ubicacion del Producto/Servicio</InputLabel>
-         
+          <Select
+              id="dynamic-select-tipo-orden"
+              value={formik.values.IdTipoEstatusOK}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="IdTipoEstatusOK"
+              aria-label="IdTipoEstatusOK"
+          >
+              {OrdenesValuesLabel.map((option, index) => (
+              <MenuItem key={option.IdValorOK} value={`IdEstatusOrdenesVTA-${option.key}`}>
+                  {option.IdValorOK}
+              </MenuItem>
+              ))}
+          </Select>
           <FormControlLabel
               control={
               <Checkbox
@@ -160,7 +173,22 @@ const OrdenesDetalleInfoAdModal = ({
               error={formik.touched.Actual && Boolean(formik.errors.Actual)}
               helperText={formik.touched.Actual && formik.errors.Actual}
           />
-          
+          <TextField
+            id="Observacion"
+            label="Observacion*"
+            multiline
+            rows={4}    
+            maxRows={10}
+            value={formik.values.Observacion}
+            {...commonTextFieldProps}
+            error={
+              formik.touched.Observacion &&
+              Boolean(formik.errors.Observacion)
+            }
+            helperText={
+              formik.touched.Observacion && formik.errors.Observacion
+            }
+          />
           {/* Agregar otros campos aquí si es necesario */}
         </DialogContent>
         <DialogActions sx={{ display: "flex", flexDirection: "row" }}>
