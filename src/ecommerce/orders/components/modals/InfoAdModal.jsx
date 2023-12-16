@@ -39,6 +39,7 @@ import { OrdenesInfoAdValues } from "../../helpers/OrdenesInfoAdValues";
 import { PatchInfoAd } from "../../service/remote/update/PatchInfoAd";
 import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 import { UpdatePatchOneOrder } from "../../service/remote/post/AddOrdenesEstatus";
+import { GetAllLabels } from "../../../labels/services/remote/get/GetAllLabels";
 
 
 const InfoAdModal = ({ 
@@ -52,7 +53,32 @@ const InfoAdModal = ({
     const [Loading, setLoading] = useState(false);
     const [refresh, setRefresh] = useState(false);
     const [isNuevaEtiqueta, setINuevaEtiqueta] = React.useState(false);
-    
+    const [OrdenesValuesLabel, setOrdenesValuesLabel] = useState([]);
+
+    async function getDataSelectOrdenesType2() {
+        try {
+          const Labels = await GetAllLabels();
+          const OrdenesTypes = Labels.find(
+            (label) => label.IdEtiquetaOK === "IdSeccionesOrdenes"
+          );
+          const valores = OrdenesTypes.valores; // Obtenemos el array de valores
+          const IdValoresOK = valores.map((valor, index) => ({
+            IdValorOK: valor.Valor,
+            key: valor.IdValorOK, // Asignar el índice como clave temporal
+          }));
+          setOrdenesValuesLabel(IdValoresOK);
+          console.log(OrdenesValuesLabel)
+        } catch (e) {
+          console.error(
+            "Error al obtener Etiquetas para Tipos Giros de Institutos:",
+            e
+          );
+        }
+      }
+
+      useEffect(() => {
+        getDataSelectOrdenesType2();
+      }, []);
 
     /*useEffect(() => {
         console.log("Todas las Etiquetas", etiquetas);
@@ -96,23 +122,7 @@ const InfoAdModal = ({
 
                 console.log("<<Ordenes info ad>>", EstatusOrdenes);
                 await UpdatePatchOneOrder(productSel.IdInstitutoOK,productSel.IdNegocioOK,productSel.IdOrdenOK,EstatusOrdenes);
-                /*let model = InfoAdModel();
-                const infoAd = {
-                ...model,
-                ...values,
-                };
-                infoAd.Secuencia = Number(infoAd.Secuencia);
-                //Trae la coleccion ordenes_info_ad de la orden seleccionada
-                let ordenInfoAd = JSON.parse(JSON.stringify(productSel));
-                //console.log("Ordenes", ordenInfoAd);
-                
-                ordenInfoAd.ordenes_info_ad.push(infoAd);
-                const dataToUpdate = {
-                    ordenes_info_ad: ordenInfoAd.ordenes_info_ad,
-                };
-                console.log(" ks",ordenInfoAd.ordenes_info_ad);
-                await PatchInfoAd(ordenInfoAd.IdInstitutoOK,ordenInfoAd.IdNegocioOK,ordenInfoAd.IdOrdenOK, dataToUpdate);
-                    */          
+                     
                 setMensajeExitoAlert("Info Adicional creada y guardada Correctamente");
                 handleReload();
             } catch (e) {
@@ -194,32 +204,8 @@ const InfoAdModal = ({
                         error={ formik.touched.IdEtiqueta && Boolean(formik.errors.IdEtiqueta) }
                         helperText={ formik.touched.IdEtiqueta && formik.errors.IdEtiqueta }
                     />
-                    {/*<TextField
-                        id="Etiqueta"
-                        label="Etiqueta*"
-                        value={formik.values.Etiqueta}
-                        {...commonTextFieldProps}
-                        error={ formik.touched.Etiqueta && Boolean(formik.errors.Etiqueta) }
-                        helperText={ formik.touched.Etiqueta && formik.errors.Etiqueta }
-                    />
-                    <TextField
-                        id="Valor"
-                        label="Valor*"
-                        value={formik.values.Valor}
-                        {...commonTextFieldProps}
-                        error={ formik.touched.Valor && Boolean(formik.errors.Valor) }
-                        helperText={ formik.touched.Valor && formik.errors.Valor }
-                    />
-                    <TextField
-                        id="IdTipoSeccionOK"
-                        label="IdTipoSeccionOK*"
-                        value={formik.values.IdTipoSeccionOK}
-                        {...commonTextFieldProps}
-                        error={ formik.touched.IdTipoSeccionOK && Boolean(formik.errors.IdTipoSeccionOK) }
-                        helperText={ formik.touched.IdTipoSeccionOK && formik.errors.IdTipoSeccionOK }
-                    />*/}
                     <FormControl fullWidth margin="normal">
-                        <InputLabel>Selecciona una opción</InputLabel>
+                        <InputLabel>Selecciona una Seccion</InputLabel>
                         <Select
                             value={formik.values.IdTipoSeccionOK}
                             label="Selecciona una opción"
@@ -227,17 +213,13 @@ const InfoAdModal = ({
                             name="IdTipoSeccionOK" // Asegúrate de que coincida con el nombre del campo
                             onBlur={formik.handleBlur}
                             disabled={!!mensajeExitoAlert}
+                            aria-label="TipoOrden"
                             >
-                            {etiquetaEspecifica?.valores.map((seccion) => {
-                            return (
-                                <MenuItem
-                                    value={`IdEstatusCatProdServ-${seccion.IdValorOK}`}
-                                    key={seccion.IdValorOK}
-                                >
-                                    {seccion.Valor}
-                                </MenuItem>
-                                );
-                            })}
+                            {OrdenesValuesLabel.map((option, index) => (
+                            <MenuItem key={option.IdValorOK} value={`IdSeccionesOrdenes-${option.key}`}>
+                                {option.IdValorOK}
+                            </MenuItem>
+                            ))}
                         </Select>
                         <FormHelperText>
                         {formik.touched.IdTipoSeccionOK && formik.errors.IdTipoSeccionOK}

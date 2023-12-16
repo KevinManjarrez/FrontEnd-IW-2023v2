@@ -184,7 +184,7 @@ const OrdenesDetalleModal = ({
                     {etiquetaEspecifica?.cat_prod_serv_presenta.map((seccion) => {
                         return (
                         <MenuItem
-                            value={`cat_prod_serv_presenta-${seccion.IdPresentaOK}`}
+                            value={`${seccion.IdPresentaOK}`}
                             key={seccion.IdPresentaOK}
                         >
                             {seccion.DesPresenta}

@@ -87,46 +87,45 @@ const PatchOrdenesDetalleModal = ({
             SubTotalConIVA: Yup.string().required("Campo requerido"),
         }),
         onSubmit: async (values) => {
-          setMensajeExitoAlert(null);
-          setMensajeErrorAlert(null);
+          setMensajeExitoAlert("");
+          setMensajeErrorAlert("");
+          setLoading(true);
 
-            try {
-                //Modificar el producto con el Formulario
-        const ordenExistente = await GetOneOrderByID(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK);
-        console.log("antes:",ordenExistente)
-                
-                if (selectedRowIndex >= 0) {
-                  // Crea una copia del objeto en idRowSel y modifica la propiedad IdEtiquetaOK
-                  ordenExistente.ordenes_detalle[selectedRowIndex]= {
-                    //...product.ordenes_info_ad[idRowSel],
-                      IdProdServOK: values.IdProdServOK,
-                      IdPresentaOK: values.IdPresentaOK,
-                      DesPresentaPS: values.DesPresentaPS,
-                      Cantidad: Number(values.Cantidad),
-                      PrecioUniSinIVA: Number(values.PrecioUniSinIVA),
-                      PrecioUniConIVA: Number(values.PrecioUniConIVA),
-                      PorcentajeIVA: Number(values.PorcentajeIVA),
-                      MontoUniIVA: Number(values.MontoUniIVA),
-                      SubTotalSinIVA: Number(values.SubTotalSinIVA),
-                      SubTotalConIVA: Number(values.SubTotalConIVA)
-                  };
-                  
-                }
-                
-                console.log("temp:",ordenExistente)
-                const dataToUpdate = {
-                  ordenes_detalle: ordenExistente.ordenes_detalle,
+          try {
+          const ordenExistente = await GetOneOrderByID(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK);
+          console.log("antes:",ordenExistente)
+              
+              if (selectedRowIndex >= 0) {
+                // Crea una copia del objeto en idRowSel y modifica la propiedad IdEtiquetaOK
+                ordenExistente.ordenes_detalle[selectedRowIndex]= {
+                  //...product.ordenes_info_ad[idRowSel],
+                    IdProdServOK: values.IdProdServOK,
+                    IdPresentaOK: values.IdPresentaOK,
+                    DesPresentaPS: values.DesPresentaPS,
+                    Cantidad: Number(values.Cantidad),
+                    PrecioUniSinIVA: Number(values.PrecioUniSinIVA),
+                    PrecioUniConIVA: Number(values.PrecioUniConIVA),
+                    PorcentajeIVA: Number(values.PorcentajeIVA),
+                    MontoUniIVA: Number(values.MontoUniIVA),
+                    SubTotalSinIVA: Number(values.SubTotalSinIVA),
+                    SubTotalConIVA: Number(values.SubTotalConIVA)
                 };
-                console.log("data",dataToUpdate);
-                await PatchOrdenesDetalle(ordenExistente.IdInstitutoOK,ordenExistente.IdNegocioOK,ordenExistente.IdOrdenOK, dataToUpdate);
                 
-                setMensajeExitoAlert("InfoAd modificada Correctamente");
-                handleReload();
-                console.log("Se modifico")
-            } catch (e) {
-                setMensajeErrorAlert("No se pudo crear la Info Adicional");
-            }
-            setLoading(false);
+              }
+              
+              console.log("temp:",ordenExistente)
+              const dataToUpdate = {
+                ordenes_detalle: ordenExistente.ordenes_detalle,
+              };
+              console.log("data",dataToUpdate);
+              await PatchOrdenesDetalle(ordenExistente.IdInstitutoOK,ordenExistente.IdNegocioOK,ordenExistente.IdOrdenOK, dataToUpdate);
+              
+              handleReload();
+              setMensajeExitoAlert("InfoAd modificada Correctamente");
+          } catch (e) {
+              setMensajeErrorAlert("No se pudo crear la Info Adicional");
+          }
+          setLoading(false);
         },
     });
 
@@ -217,7 +216,7 @@ const PatchOrdenesDetalleModal = ({
                     {etiquetaEspecifica?.cat_prod_serv_presenta.map((seccion) => {
                         return (
                         <MenuItem
-                            value={`cat_prod_serv_presenta-${seccion.IdPresentaOK}`}
+                            value={`${seccion.IdPresentaOK}`}
                             key={seccion.IdPresentaOK}
                         >
                             {seccion.DesPresenta}
@@ -363,15 +362,8 @@ const PatchOrdenesDetalleModal = ({
           {/* Agregar el resto de los campos aquí */}
         </DialogContent>
                 {/* FIC: Aqui van las acciones del usuario como son las alertas o botones */}
-                <DialogActions
-                    sx={{ display: 'flex', flexDirection: 'row' }}
-                >
+                <DialogActions sx={{ display: 'flex', flexDirection: 'row' }}>
                     <Box m="auto">
-                    {!formik.isValid && (
-                    <Alert severity="error">
-                        {"El formulario aun no está completo"}
-                    </Alert>
-                    )}
                     {mensajeErrorAlert !== "" && (
                     <Alert severity="error">
                         <b>¡ERROR!</b> ─ {mensajeErrorAlert}

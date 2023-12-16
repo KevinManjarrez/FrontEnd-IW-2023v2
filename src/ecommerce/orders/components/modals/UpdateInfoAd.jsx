@@ -31,6 +31,7 @@ import * as Yup from "yup";
 import {  PatchInfoAd } from "../../service/remote/update/PatchInfoAd";
 import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
 import {cloneDeep} from 'lodash/cloneDeep';
+import { GetAllLabels } from "../../../labels/services/remote/get/GetAllLabels";
 
 
 const UpdateInfoAd = ({
@@ -47,6 +48,32 @@ const UpdateInfoAd = ({
   //
   const [isNuevaEtiqueta, setINuevaEtiqueta] = React.useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [OrdenesValuesLabel, setOrdenesValuesLabel] = useState([]);
+
+    async function getDataSelectOrdenesType2() {
+        try {
+          const Labels = await GetAllLabels();
+          const OrdenesTypes = Labels.find(
+            (label) => label.IdEtiquetaOK === "IdSeccionesOrdenes"
+          );
+          const valores = OrdenesTypes.valores; // Obtenemos el array de valores
+          const IdValoresOK = valores.map((valor, index) => ({
+            IdValorOK: valor.Valor,
+            key: valor.IdValorOK, // Asignar el índice como clave temporal
+          }));
+          setOrdenesValuesLabel(IdValoresOK);
+          console.log(OrdenesValuesLabel)
+        } catch (e) {
+          console.error(
+            "Error al obtener Etiquetas para Tipos Giros de Institutos:",
+            e
+          );
+        }
+      }
+
+      useEffect(() => {
+        getDataSelectOrdenesType2();
+      }, []);
 
   useEffect(() => {
     console.log("isNuevaEtiqueta", isNuevaEtiqueta);
@@ -188,30 +215,26 @@ const UpdateInfoAd = ({
             disabled={!!mensajeExitoAlert}
           />
           <FormControl fullWidth margin="normal">
-            <InputLabel>Selecciona una opción</InputLabel>
-            <Select
-              value={formik.values.IdTipoSeccionOK}
-              label="Selecciona una opción"
-              onChange={formik.handleChange}
-              name="IdTipoSeccionOK" // Asegúrate de que coincida con el nombre del campo
-              onBlur={formik.handleBlur}
-              disabled={!!mensajeExitoAlert}
-            >
-              {etiquetaEspecifica?.valores.map((seccion) => {
-                return (
-                  <MenuItem
-                    value={`IdEstatusCatProdServ-${seccion.IdValorOK}`}
-                    key={seccion.IdValorOK}
-                  >
-                    {seccion.Valor}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-            <FormHelperText>
-              {formik.touched.IdTipoSeccionOK && formik.errors.IdTipoSeccionOK}
-            </FormHelperText>
-          </FormControl>
+                        <InputLabel>Selecciona una Seccion</InputLabel>
+                        <Select
+                            value={formik.values.IdTipoSeccionOK}
+                            label="Selecciona una opción"
+                            onChange={formik.handleChange}
+                            name="IdTipoSeccionOK" // Asegúrate de que coincida con el nombre del campo
+                            onBlur={formik.handleBlur}
+                            disabled={!!mensajeExitoAlert}
+                            aria-label="TipoOrden"
+                            >
+                            {OrdenesValuesLabel.map((option, index) => (
+                            <MenuItem key={option.IdValorOK} value={`IdSeccionesOrdenes-${option.key}`}>
+                                {option.IdValorOK}
+                            </MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText>
+                        {formik.touched.IdTipoSeccionOK && formik.errors.IdTipoSeccionOK}
+                        </FormHelperText>
+                </FormControl>
           <TextField
             id="Valor"
             label="Valor*"
