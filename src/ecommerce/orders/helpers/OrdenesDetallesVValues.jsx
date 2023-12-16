@@ -1,9 +1,9 @@
-import { OrdenesDetallesVModel } from "../models/OrdenesDetallesVModel";
+import { OrdenesDetalleVModel } from "../models/OrdenesDetalleVModel";
 
 //FIC: obtiene los valores capturados en la ventana modal
 //enviados desde el evento onSubmit de Formik
-export const OrdenesDetallesVValues = (values, ordenesDetallesV) => {
-  let OrdenesDetallesV = ordenesDetallesV || OrdenesDetallesVModel();
+export const OrdenesDetallesVValues = (values, ordenesDetallesV,index) => {
+  let OrdenesDetallesV = ordenesDetallesV || OrdenesDetalleVModel();
   // Crear un nuevo objeto de estatus
   let nuevoDetalleV = {
     IdTipoEstatusOK: values.IdTipoEstatusOK,
@@ -13,7 +13,7 @@ export const OrdenesDetallesVValues = (values, ordenesDetallesV) => {
   };
 
   // Agregar el nuevo objeto de estatus al array existente
-  OrdenesDetallesV.ordenes_detalles.pedidos_detalle_ps_estatus_v.push(
+  OrdenesDetallesV.ordenes_detalle[index].pedidos_detalle_ps_estatus_v.push(
     nuevoDetalleV
   );
 
