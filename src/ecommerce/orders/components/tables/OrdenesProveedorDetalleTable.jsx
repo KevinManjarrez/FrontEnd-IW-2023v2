@@ -90,4 +90,3 @@ const OrdenesProveedorDetalleTable = ({
 };
 
 export default OrdenesProveedorDetalleTable;
-
