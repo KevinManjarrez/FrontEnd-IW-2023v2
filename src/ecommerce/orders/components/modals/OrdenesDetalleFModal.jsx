@@ -22,11 +22,12 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 // ... otras importaciones necesarias
 import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
-import { OrdenesDetallesUValues } from "../../helpers/OrdenesDetallesUValues";
+import { OrdenesDetallesFValues } from "../../helpers/OrdenesDetallesFValues";
 import { UpdatePatchOneOrder } from "../../service/remote/post/AddOrdenesEstatus";
 import { GetAllLabels } from "../../../labels/services/remote/get/GetAllLabels";
 
-const OrdenesDetalleUModal = ({
+
+const OrdenesDetalleFModal = ({
   showModalF,
   setShowModalF,
   row,
@@ -39,7 +40,6 @@ const OrdenesDetalleUModal = ({
   const [Loading, setLoading] = useState(false);
   const [OrdenesValuesLabel, setOrdenesValuesLabel] = useState([]);
 
-
   const formik = useFormik({
     initialValues: {
         IdTipoEstatusOK: "",
@@ -49,17 +49,13 @@ const OrdenesDetalleUModal = ({
     validationSchema: Yup.object({
         IdTipoEstatusOK: Yup.string().required("Campo requerido"),
         Actual: Yup.boolean().required("Campo requerido"),
-      }),
+    }),
     onSubmit: async (values) => {
       setMensajeExitoAlert("");
       setMensajeErrorAlert("");
       setLoading(true);
-      //FIC: reiniciamos los estados de las alertas de exito y error.
-      setMensajeErrorAlert(null);
-      setMensajeExitoAlert(null);
+
       try {
-        // Lógica para guardar la información en la base de datos
-        //console.log(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK)
         const ordenExistente = await GetOneOrderByID(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK);
 
         console.log("<<Ordenes>>",ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_f);
@@ -75,16 +71,9 @@ const OrdenesDetalleUModal = ({
         }
         
         values.Actual == true ? (values.Actual = "S") : (values.Actual = "N");
-        //ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_f.push(values);
-        //console.log(ordenExistente);
 
-        const EstatusOrdenes = OrdenesDetallesUValues(values, ordenExistente,index);
-        //const EstatusOrdenes = OrdenesEstatusValues(values);
-        
-        //console.log("<<Ordenes>>", EstatusOrdenes);
-        // console.log("LA ID QUE SE PASA COMO PARAMETRO ES:", row._id);
-        // Utiliza la función de actualización si estamos en modo de edición
-        
+        const EstatusOrdenes = OrdenesDetallesFValues(values, ordenExistente,index);
+
         await UpdatePatchOneOrder(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK,EstatusOrdenes);
         setMensajeExitoAlert("Envío actualizado correctamente");
         handleReload();
@@ -130,20 +119,17 @@ const OrdenesDetalleUModal = ({
   },[]);
 
   return (
-    <Dialog open={showModalF}
+    <Dialog open={showModalF} 
     onClose={() => setShowModalF(false)}
-    fullWidth  
-    >
-      <form onSubmit={(e) => {formik.handleSubmit(e)}}>
+    fullWidth>
+      <form onSubmit={(e) => formik.handleSubmit(e)}>
         <DialogTitle>
           <Typography>
             <strong>Agregar Nuevo Estado de la Orden</strong>
           </Typography>
         </DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column" }}
-        dividers
-        >
-       <InputLabel htmlFor="dynamic-select-tipo-orden">Estatus Físico del Producto/Servicio</InputLabel>
+        <DialogContent sx={{ display: "flex", flexDirection: "column" }} dividers>
+        <InputLabel htmlFor="dynamic-select-tipo-orden">Estatus Fisico del Producto/Servicio</InputLabel>
           <Select
               id="dynamic-select-tipo-orden"
               value={formik.values.IdTipoEstatusOK}
@@ -174,15 +160,20 @@ const OrdenesDetalleUModal = ({
               helperText={formik.touched.Actual && formik.errors.Actual}
           />
           <TextField
-              id="Observacion"
-              label="Observacion*"
-              multiline
-              rows={4}    
-              maxRows={10}
-              value={formik.values.Observacion}
-              {...commonTextFieldProps}
-              error={ formik.touched.Observacion && Boolean(formik.errors.Observacion) }
-              helperText={ formik.touched.Observacion && formik.errors.Observacion }
+            id="Observacion"
+            label="Observacion*"
+            multiline
+            rows={4}    
+            maxRows={10}
+            value={formik.values.Observacion}
+            {...commonTextFieldProps}
+            error={
+              formik.touched.Observacion &&
+              Boolean(formik.errors.Observacion)
+            }
+            helperText={
+              formik.touched.Observacion && formik.errors.Observacion
+            }
           />
           {/* Agregar otros campos aquí si es necesario */}
         </DialogContent>
@@ -204,7 +195,7 @@ const OrdenesDetalleUModal = ({
             loadingPosition="start"
             startIcon={<CloseIcon />}
             variant="outlined"
-            onClick={() => setShowModalF(false)}
+            onClick={()=>setShowModalF(false)}
           >
             <span>CERRAR</span>
           </LoadingButton>
@@ -226,4 +217,4 @@ const OrdenesDetalleUModal = ({
   );
 };
 
-export default OrdenesDetalleUModal;
+export default OrdenesDetalleFModal;
