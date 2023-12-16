@@ -3,8 +3,8 @@ import {
   Box,
   Dialog
 } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
+import { MaterialReactTable } from "material-react-table";
 
 import OrdenesDetalleFModal from "../modals/OrdenesDetalleFModal";
 import BarActionsTable from "../../../../share/components/elements/bars/BarActionsTable";
@@ -22,9 +22,10 @@ const OrdenesDetalleFTable = ({
 
   const [showModalF, setShowModalF] = useState(false);
     //Con redux sacar la data que se envió del otro archivo (ShippingsTable)
+  //const selectedOrdenesDetalleData = useSelector((state) => state.ordenesReducer.selectedOrdenesDetalleData);
   const selectedOrdenesData = useSelector((state) => state.ordenesReducer.selectedOrdenesData);
   const index=useSelector((state) => state.ordenesReducer.index)
-
+  
   useEffect(() => {
     async function fetchData() {
       try {
@@ -40,7 +41,7 @@ const OrdenesDetalleFTable = ({
 
   const handleReload = async () => {
     const OrdenesDetalledata = await GetOneOrderByID(selectedOrdenesData.IdInstitutoOK,selectedOrdenesData.IdNegocioOK,selectedOrdenesData.IdOrdenOK);
-    setOrdenesEstatusData(OrdenesDetalledata.ordenes_detalle[index].pedidos_detalle_ps_estatus_f);
+    setOrdenesDetalleFData(OrdenesDetalledata.ordenes_detalle[index].pedidos_detalle_ps_estatus_f);
     setSelectedRowIndex(null);
   };
 
@@ -105,6 +106,7 @@ const OrdenesDetalleFTable = ({
           showModalF={showModalF}
           setShowModalF={setShowModalF}
           row={selectedOrdenesData}
+          index={index}
           handleReload={handleReload}
           onClose={() => setShowModalF(false)}
 

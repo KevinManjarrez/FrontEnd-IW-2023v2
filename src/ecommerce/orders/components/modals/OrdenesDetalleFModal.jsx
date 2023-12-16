@@ -20,14 +20,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-
+// ... otras importaciones necesarias
 import { GetOneOrderByID } from "../../service/remote/get/GetOneOrderByID";
-import { OrdenesDetallesFValues } from "../../helpers/OrdenesDetallesFValues";
+import { OrdenesDetallesUValues } from "../../helpers/OrdenesDetallesUValues";
 import { UpdatePatchOneOrder } from "../../service/remote/post/AddOrdenesEstatus";
 import { GetAllLabels } from "../../../labels/services/remote/get/GetAllLabels";
 
-
-const OrdenesDetalleFModal = ({
+const OrdenesDetalleUModal = ({
   showModalF,
   setShowModalF,
   row,
@@ -39,7 +38,8 @@ const OrdenesDetalleFModal = ({
   const [mensajeExitoAlert, setMensajeExitoAlert] = useState("");
   const [Loading, setLoading] = useState(false);
   const [OrdenesValuesLabel, setOrdenesValuesLabel] = useState([]);
-  
+
+
   const formik = useFormik({
     initialValues: {
         IdTipoEstatusOK: "",
@@ -49,16 +49,16 @@ const OrdenesDetalleFModal = ({
     validationSchema: Yup.object({
         IdTipoEstatusOK: Yup.string().required("Campo requerido"),
         Actual: Yup.boolean().required("Campo requerido"),
-    }),
+      }),
     onSubmit: async (values) => {
       setMensajeExitoAlert("");
       setMensajeErrorAlert("");
       setLoading(true);
-       //FIC: reiniciamos los estados de las alertas de exito y error.
-       setMensajeErrorAlert(null);
-       setMensajeExitoAlert(null);
+      //FIC: reiniciamos los estados de las alertas de exito y error.
+      setMensajeErrorAlert(null);
+      setMensajeExitoAlert(null);
       try {
-       // Lógica para guardar la información en la base de datos
+        // Lógica para guardar la información en la base de datos
         //console.log(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK)
         const ordenExistente = await GetOneOrderByID(row.IdInstitutoOK,row.IdNegocioOK,row.IdOrdenOK);
 
@@ -78,7 +78,7 @@ const OrdenesDetalleFModal = ({
         //ordenExistente.ordenes_detalle[index].pedidos_detalle_ps_estatus_f.push(values);
         //console.log(ordenExistente);
 
-        const EstatusOrdenes = OrdenesDetallesFValues(values, ordenExistente,index);
+        const EstatusOrdenes = OrdenesDetallesUValues(values, ordenExistente,index);
         //const EstatusOrdenes = OrdenesEstatusValues(values);
         
         //console.log("<<Ordenes>>", EstatusOrdenes);
@@ -226,4 +226,4 @@ const OrdenesDetalleFModal = ({
   );
 };
 
-export default OrdenesDetalleFModal;
+export default OrdenesDetalleUModal;
